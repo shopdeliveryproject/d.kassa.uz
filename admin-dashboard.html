@@ -38,10 +38,7 @@
   }
   .sidebar.closed{ transform: translateX(-100%); }
 
-  .brand{
-    display:flex; align-items:center; gap:10px;
-    padding: 22px 22px 16px;
-  }
+  .brand{ display:flex; align-items:center; gap:10px; padding: 22px 22px 16px; }
   .brand .mark{
     width:34px; height:34px; border-radius:9px;
     background: linear-gradient(135deg,var(--saffron),var(--turquoise));
@@ -74,17 +71,9 @@
   .nav-item.active{ background: rgba(230,162,51,0.15); color: var(--saffron); }
   .nav-item.active svg{ opacity:1; }
 
-  .sidebar-foot{
-    padding: 16px 22px 20px;
-    font-size: 11px;
-    color: rgba(247,239,221,0.35);
-    font-style: italic;
-  }
+  .sidebar-foot{ padding: 16px 22px 20px; font-size: 11px; color: rgba(247,239,221,0.35); font-style: italic; }
 
-  .overlay{
-    display:none;
-    position:fixed; inset:0; background:rgba(0,0,0,0.35); z-index:30;
-  }
+  .overlay{ display:none; position:fixed; inset:0; background:rgba(0,0,0,0.35); z-index:30; }
   .overlay.show{ display:block; }
 
   /* ============ MAIN ============ */
@@ -123,6 +112,7 @@
     color:#fff; font-weight:800; font-size:11px;
   }
   .admin-chip span{ font-size:12.5px; font-weight:700; }
+  .logout-btn{ border:none;background:none;cursor:pointer;color:#8a7c62;font-size:12.5px;font-weight:700; }
 
   .content{ padding: 26px 24px 60px; max-width:1200px; }
   .section{ display:none; animation: fadein .25s ease; }
@@ -136,15 +126,8 @@
   .stats{ display:grid; grid-template-columns: repeat(4,1fr); gap:14px; margin-bottom:26px; }
   @media(max-width:900px){ .stats{ grid-template-columns: repeat(2,1fr); } }
   @media(max-width:520px){ .stats{ grid-template-columns: 1fr; } }
-  .stat{
-    background:#fff; border-radius:14px; padding:18px;
-    border: 1px solid rgba(33,26,18,0.06);
-  }
-  .stat .icon{
-    width:36px;height:36px;border-radius:10px;
-    display:flex;align-items:center;justify-content:center;
-    margin-bottom:12px;
-  }
+  .stat{ background:#fff; border-radius:14px; padding:18px; border: 1px solid rgba(33,26,18,0.06); }
+  .stat .icon{ width:36px;height:36px;border-radius:10px; display:flex;align-items:center;justify-content:center; margin-bottom:12px; }
   .stat .icon svg{ width:18px;height:18px; }
   .stat.c1 .icon{ background:rgba(31,138,130,0.12); }
   .stat.c2 .icon{ background:rgba(230,162,51,0.15); }
@@ -152,9 +135,6 @@
   .stat.c4 .icon{ background:rgba(43,74,112,0.1); }
   .stat .num{ font-size:24px; font-weight:800; }
   .stat .lbl{ font-size:12px; color:#8a7c62; margin-top:2px; }
-  .stat .delta{ font-size:11px; font-weight:700; margin-top:8px; }
-  .stat .delta.up{ color:#1f8a5a; }
-  .stat .delta.down{ color:#b6512f; }
 
   /* ---- table ---- */
   .panel-box{ background:#fff; border-radius:14px; border:1px solid rgba(33,26,18,0.06); overflow:hidden; }
@@ -170,46 +150,81 @@
   .badge.red{ background:rgba(182,81,47,0.14); color:#b6512f; }
   .badge.blue{ background:rgba(43,74,112,0.12); color:#2b4a70; }
 
-  /* ---- products grid ---- */
-  .grid-cards{ display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:14px; }
-  .prod-card{ background:#fff; border-radius:14px; border:1px solid rgba(33,26,18,0.06); padding:16px; }
-  .prod-thumb{ width:100%; height:80px; border-radius:10px; margin-bottom:12px; background: linear-gradient(135deg,var(--parchment-2),#e3d5ac); display:flex; align-items:center; justify-content:center; font-size:26px; }
-  .prod-name{ font-weight:700; font-size:14px; }
-  .prod-shop{ font-size:11.5px; color:#8a7c62; margin-top:2px; }
-  .prod-price{ margin-top:10px; font-weight:800; color:var(--brick); font-size:14px; }
-
-  /* ---- sellers ---- */
-  .seller-list{ display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:14px; }
-  .seller-card{ background:#fff; border-radius:14px; border:1px solid rgba(33,26,18,0.06); padding:16px; display:flex; gap:12px; align-items:flex-start; }
-  .seller-av{ width:44px;height:44px;border-radius:50%; background: linear-gradient(135deg,#f6cf6b,#e8a233); flex-shrink:0; display:flex;align-items:center;justify-content:center; font-weight:800; color:#5c3d10; }
-  .seller-name{ font-weight:700; font-size:14px; }
-  .seller-village{ font-size:11.5px; color:#8a7c62; margin-top:1px; }
-  .seller-meta{ display:flex; gap:10px; margin-top:8px; font-size:11px; color:#8a7c62; }
-
-  /* ---- analytics bars ---- */
-  .bars{ display:flex; align-items:flex-end; gap:14px; height:200px; padding: 10px 6px 0; }
-  .bar-col{ flex:1; display:flex; flex-direction:column; align-items:center; gap:8px; }
-  .bar{ width:100%; max-width:36px; border-radius:6px 6px 2px 2px; background: linear-gradient(180deg,var(--turquoise-l),var(--turquoise)); }
-  .bar-lbl{ font-size:10.5px; color:#8a7c62; }
-
-  /* ---- contact ---- */
-  .msg-list{ display:flex; flex-direction:column; gap:10px; margin-bottom:22px; }
-  .msg{ background:#fff; border-radius:12px; border:1px solid rgba(33,26,18,0.06); padding:14px 16px; }
-  .msg-top{ display:flex; justify-content:space-between; font-size:12px; color:#8a7c62; margin-bottom:6px; }
-  .msg-from{ font-weight:700; color:var(--ink); }
-  .msg-text{ font-size:13.5px; line-height:1.5; }
-
-  .contact-form{ background:#fff; border-radius:14px; border:1px solid rgba(33,26,18,0.06); padding:20px; max-width:520px; }
-  .contact-form label{ font-size:11.5px; font-weight:700; color:#8a7c62; text-transform:uppercase; letter-spacing:0.3px; }
-  .contact-form input, .contact-form textarea{
-    width:100%; margin-top:6px; margin-bottom:14px;
-    padding:11px 13px; border-radius:9px; border:1px solid rgba(33,26,18,0.12);
-    font-family:'Manrope',sans-serif; font-size:13.5px; resize:vertical;
+  /* ---- do'konlar ---- */
+  .shops-toolbar{ display:flex; justify-content:flex-end; margin-bottom:16px; }
+  .btn-primary{
+    border:none; cursor:pointer;
+    background: linear-gradient(135deg,var(--saffron),#c07f1f);
+    color:#241c15; font-weight:800; font-size:13.5px;
+    padding: 11px 18px; border-radius: 10px;
+    display:inline-flex; align-items:center; gap:8px;
+    transition: transform .15s ease, box-shadow .15s ease;
   }
-  .contact-form button{
-    border:none; cursor:pointer; background: linear-gradient(135deg,var(--saffron),#c07f1f);
-    color:#241c15; font-weight:800; padding:11px 20px; border-radius:9px; font-size:13.5px;
+  .btn-primary:hover{ transform:translateY(-2px); box-shadow: 0 10px 20px -10px rgba(230,162,51,0.55); }
+
+  .shops-empty{
+    background:#fff; border:1px dashed rgba(33,26,18,0.18); border-radius:14px;
+    padding: 44px 20px; text-align:center; color:#8a7c62; font-size:13.5px;
   }
+  .shops-empty .big{ font-size:32px; margin-bottom:10px; }
+
+  .shop-list{ display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:14px; margin-bottom:20px; }
+  .shop-card{ background:#fff; border-radius:14px; border:1px solid rgba(33,26,18,0.06); padding:16px; display:flex; gap:12px; align-items:flex-start; }
+  .shop-av{
+    width:44px;height:44px;border-radius:12px; flex-shrink:0;
+    background: linear-gradient(135deg,#f6cf6b,#e8a233);
+    display:flex;align-items:center;justify-content:center;
+    font-weight:800; color:#5c3d10; font-size:14px;
+  }
+  .shop-name{ font-weight:700; font-size:14.5px; }
+  .shop-village{ font-size:11.5px; color:#8a7c62; margin-top:1px; }
+  .shop-owner{ font-size:11.5px; color:#8a7c62; margin-top:8px; }
+  .shop-owner b{ color:var(--ink); font-weight:700; }
+
+  .loading-row{ text-align:center; color:#8a7c62; font-size:13px; padding: 30px 0; }
+
+  /* ---- admin settings ---- */
+  .settings-card{ background:#fff; border-radius:14px; border:1px solid rgba(33,26,18,0.06); padding:20px; max-width:480px; }
+  .settings-row{ display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid rgba(33,26,18,0.06); font-size:13.5px; }
+  .settings-row:last-child{ border-bottom:none; }
+  .settings-row span:first-child{ color:#8a7c62; }
+  .settings-row span:last-child{ font-weight:700; }
+  .settings-note{ margin-top:16px; font-size:12px; color:#8a7c62; font-style:italic; }
+
+  /* ---- modal ---- */
+  .modal-overlay{
+    display:none; position:fixed; inset:0; z-index:100;
+    background: rgba(20,15,8,0.5);
+    align-items:center; justify-content:center; padding: 20px;
+  }
+  .modal-overlay.show{ display:flex; }
+  .modal-box{
+    background:#fff; border-radius:16px; padding:26px;
+    width:100%; max-width:440px;
+    animation: fadein .2s ease;
+  }
+  .modal-box h3{ margin:0 0 4px; font-size:17px; font-weight:800; }
+  .modal-box .modal-desc{ margin:0 0 18px; font-size:12.5px; color:#8a7c62; }
+  .modal-box label{
+    font-size:11px; font-weight:700; color:#8a7c62; text-transform:uppercase;
+    letter-spacing:0.3px; display:block; margin-bottom:6px;
+  }
+  .modal-field{ margin-bottom:14px; }
+  .modal-box input{
+    width:100%; padding:11px 13px; border-radius:9px;
+    border:1px solid rgba(33,26,18,0.15); font-family:'Manrope',sans-serif; font-size:13.5px;
+  }
+  .modal-box input:focus{ outline:none; border-color: var(--saffron); }
+  .modal-error{
+    display:none; background: rgba(182,81,47,0.1); border:1px solid rgba(182,81,47,0.3);
+    color:#8a3a20; font-size:12px; padding:9px 12px; border-radius:8px; margin-bottom:14px;
+  }
+  .modal-error.show{ display:block; }
+  .modal-actions{ display:flex; gap:10px; margin-top:6px; }
+  .modal-actions button{ flex:1; padding:11px; border-radius:9px; font-weight:700; font-size:13.5px; cursor:pointer; border:none; }
+  .btn-cancel{ background: rgba(33,26,18,0.06); color:var(--ink); }
+  .btn-submit{ background: linear-gradient(135deg,var(--saffron),#c07f1f); color:#241c15; }
+  .btn-submit:disabled{ opacity:0.6; cursor:default; }
 </style>
 </head>
 <body>
@@ -231,27 +246,15 @@
     <nav>
       <button class="nav-item active" data-section="dashboard">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="5" rx="1.5"/><rect x="13" y="11" width="8" height="10" rx="1.5"/><rect x="3" y="14" width="8" height="7" rx="1.5"/></svg>
-        Dashboard
+        Dashboard sozlash
       </button>
-      <button class="nav-item" data-section="buyurtmalar">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M6 3h9l3 3v15H6z"/><path d="M9 10h6M9 14h6M9 18h3"/></svg>
-        Buyurtmalar
+      <button class="nav-item" data-section="dokonlar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 10V21h16V10"/><path d="M2 10l2-6h16l2 6"/><path d="M9 21v-6h6v6"/></svg>
+        Do'konlar
       </button>
-      <button class="nav-item" data-section="mahsulotlar">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 8l-9-5-9 5 9 5 9-5Z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>
-        Mahsulotlar
-      </button>
-      <button class="nav-item" data-section="sotuvchilar">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6"/><circle cx="17.5" cy="9" r="2.6"/><path d="M15.5 20c.3-2.6 1.9-4.3 4-4.6"/></svg>
-        Sotuvchilar
-      </button>
-      <button class="nav-item" data-section="analitika">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 20V10M11 20V4M18 20v-7"/><path d="M2 20h20"/></svg>
-        Analitika
-      </button>
-      <button class="nav-item" data-section="boglanish">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 5h16v12H8l-4 4V5Z"/></svg>
-        Admin bilan bog'lanish
+      <button class="nav-item" data-section="sozlamalar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.8 1.8 0 0 0 .36 1.98l.06.06a2.18 2.18 0 1 1-3.08 3.08l-.06-.06a1.8 1.8 0 0 0-1.98-.36 1.8 1.8 0 0 0-1.1 1.65V21a2.18 2.18 0 0 1-4.36 0v-.09A1.8 1.8 0 0 0 8.16 19.2a1.8 1.8 0 0 0-1.98.36l-.06.06a2.18 2.18 0 1 1-3.08-3.08l.06-.06a1.8 1.8 0 0 0 .36-1.98 1.8 1.8 0 0 0-1.65-1.1H1.7a2.18 2.18 0 0 1 0-4.36h.09A1.8 1.8 0 0 0 3.44 7.8a1.8 1.8 0 0 0-.36-1.98l-.06-.06A2.18 2.18 0 1 1 6.1 2.68l.06.06a1.8 1.8 0 0 0 1.98.36H8.3A1.8 1.8 0 0 0 9.4 1.45V1.35a2.18 2.18 0 0 1 4.36 0v.09a1.8 1.8 0 0 0 1.1 1.65h.16a1.8 1.8 0 0 0 1.98-.36l.06-.06a2.18 2.18 0 1 1 3.08 3.08l-.06.06a1.8 1.8 0 0 0-.36 1.98v.16a1.8 1.8 0 0 0 1.65 1.1h.09a2.18 2.18 0 0 1 0 4.36h-.09a1.8 1.8 0 0 0-1.65 1.1Z"/></svg>
+        Admin sozlamalari
       </button>
     </nav>
 
@@ -265,7 +268,7 @@
         <span></span><span></span><span></span>
       </button>
       <div>
-        <div class="page-title" id="pageTitle">Dashboard</div>
+        <div class="page-title" id="pageTitle">Dashboard sozlash</div>
         <div class="page-sub" id="pageSub">Umumiy holat va statistika</div>
       </div>
       <div class="topbar-right">
@@ -273,7 +276,7 @@
           <span class="av" id="adminInitials">A</span>
           <span id="adminName">admin</span>
         </div>
-        <button id="logoutBtn" style="border:none;background:none;cursor:pointer;color:#8a7c62;font-size:12.5px;font-weight:700;">Chiqish</button>
+        <button id="logoutBtn" class="logout-btn">Chiqish</button>
       </div>
     </div>
 
@@ -286,25 +289,21 @@
             <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="#1f8a82" stroke-width="1.8"><path d="M6 3h9l3 3v15H6z"/><path d="M9 10h6M9 14h6"/></svg></span>
             <div class="num" id="statOrders">—</div>
             <div class="lbl">Jami buyurtmalar</div>
-            <div class="delta up">&#8599; 12% shu oyda</div>
           </div>
           <div class="stat c2">
             <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="#c07f1f" stroke-width="1.8"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6"/></svg></span>
             <div class="num" id="statSellers">—</div>
             <div class="lbl">Faol sotuvchilar</div>
-            <div class="delta up">&#8599; 4 ta yangi</div>
           </div>
           <div class="stat c3">
             <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="#b6512f" stroke-width="1.8"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span>
             <div class="num" id="statRevenue">—</div>
             <div class="lbl">Bugungi daromad (so'm)</div>
-            <div class="delta up">&#8599; 8% kechagiga nisbatan</div>
           </div>
           <div class="stat c4">
             <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="#2b4a70" stroke-width="1.8"><path d="M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6"/><circle cx="9" cy="8" r="3.2"/><path d="M15 8h6M18 5v6"/></svg></span>
             <div class="num" id="statBuyers">—</div>
             <div class="lbl">Yangi xaridorlar</div>
-            <div class="delta down">&#8600; 2% shu haftada</div>
           </div>
         </div>
 
@@ -312,115 +311,79 @@
           <div class="panel-box-head"><h3>So'nggi buyurtmalar</h3></div>
           <table>
             <thead><tr><th>Buyurtma</th><th>Xaridor</th><th>Do'kon</th><th>Summa</th><th>Holat</th></tr></thead>
-            <tbody>
-              <tr><td>#10284</td><td>Sardor Yusupov</td><td>Guliston Bozor</td><td>84 000 so'm</td><td><span class="badge yellow">Jarayonda</span></td></tr>
-              <tr><td>#10283</td><td>Dilnoza Karimova</td><td>Qishloq Nozu-Ne'mat</td><td>132 500 so'm</td><td><span class="badge green">Yetkazildi</span></td></tr>
-              <tr><td>#10282</td><td>Aziz Tursunov</td><td>Baraka Do'koni</td><td>46 000 so'm</td><td><span class="badge blue">Qabul qilindi</span></td></tr>
-              <tr><td>#10281</td><td>Nilufar Egamova</td><td>Guliston Bozor</td><td>212 000 so'm</td><td><span class="badge red">Bekor qilindi</span></td></tr>
+            <tbody id="recentOrdersBody">
+              <tr><td colspan="5" class="loading-row">Hozircha buyurtmalar yo'q</td></tr>
             </tbody>
           </table>
         </div>
       </section>
 
-      <!-- ===== BUYURTMALAR ===== -->
-      <section class="section" id="sec-buyurtmalar">
-        <h1 class="title">Buyurtmalar</h1>
-        <p class="desc">Barcha do'konlardan tushgan buyurtmalar ro'yxati</p>
-        <div class="panel-box">
-          <table>
-            <thead><tr><th>№</th><th>Sana</th><th>Xaridor</th><th>Do'kon</th><th>Mahsulotlar</th><th>Summa</th><th>Holat</th></tr></thead>
-            <tbody>
-              <tr><td>#10284</td><td>14.08.2026</td><td>Sardor Yusupov</td><td>Guliston Bozor</td><td>3 xil</td><td>84 000</td><td><span class="badge yellow">Jarayonda</span></td></tr>
-              <tr><td>#10283</td><td>13.08.2026</td><td>Dilnoza Karimova</td><td>Nozu-Ne'mat</td><td>7 xil</td><td>132 500</td><td><span class="badge green">Yetkazildi</span></td></tr>
-              <tr><td>#10282</td><td>13.08.2026</td><td>Aziz Tursunov</td><td>Baraka Do'koni</td><td>2 xil</td><td>46 000</td><td><span class="badge blue">Qabul qilindi</span></td></tr>
-              <tr><td>#10281</td><td>12.08.2026</td><td>Nilufar Egamova</td><td>Guliston Bozor</td><td>5 xil</td><td>212 000</td><td><span class="badge red">Bekor qilindi</span></td></tr>
-              <tr><td>#10280</td><td>12.08.2026</td><td>Otabek Rahimov</td><td>Baraka Do'koni</td><td>4 xil</td><td>97 000</td><td><span class="badge green">Yetkazildi</span></td></tr>
-            </tbody>
-          </table>
+      <!-- ===== DO'KONLAR ===== -->
+      <section class="section" id="sec-dokonlar">
+        <h1 class="title">Do'konlar</h1>
+        <p class="desc">Tizimga ulangan barcha do'konlarni shu yerdan nazorat qilasiz</p>
+
+        <div class="shops-toolbar">
+          <button class="btn-primary" id="openAddShop">+ Do'kon qo'shish</button>
+        </div>
+
+        <div id="shopsContainer">
+          <div class="loading-row">Yuklanmoqda...</div>
         </div>
       </section>
 
-      <!-- ===== MAHSULOTLAR ===== -->
-      <section class="section" id="sec-mahsulotlar">
-        <h1 class="title">Mahsulotlar</h1>
-        <p class="desc">Do'konlar tomonidan qo'shilgan mahsulotlar</p>
-        <div class="grid-cards">
-          <div class="prod-card"><div class="prod-thumb">&#127815;</div><div class="prod-name">Pomidor</div><div class="prod-shop">Guliston Bozor</div><div class="prod-price">9 000 so'm/kg</div></div>
-          <div class="prod-card"><div class="prod-thumb">&#127807;</div><div class="prod-name">Non</div><div class="prod-shop">Baraka Do'koni</div><div class="prod-price">4 000 so'm/dona</div></div>
-          <div class="prod-card"><div class="prod-thumb">&#127817;</div><div class="prod-name">Olma</div><div class="prod-shop">Nozu-Ne'mat</div><div class="prod-price">12 000 so'm/kg</div></div>
-          <div class="prod-card"><div class="prod-thumb">&#129370;</div><div class="prod-name">Sut</div><div class="prod-shop">Guliston Bozor</div><div class="prod-price">8 500 so'm/l</div></div>
-          <div class="prod-card"><div class="prod-thumb">&#127805;</div><div class="prod-name">Kartoshka</div><div class="prod-shop">Baraka Do'koni</div><div class="prod-price">5 500 so'm/kg</div></div>
-          <div class="prod-card"><div class="prod-thumb">&#127831;</div><div class="prod-name">Tuxum</div><div class="prod-shop">Nozu-Ne'mat</div><div class="prod-price">1 200 so'm/dona</div></div>
-        </div>
-      </section>
+      <!-- ===== ADMIN SOZLAMALARI ===== -->
+      <section class="section" id="sec-sozlamalar">
+        <h1 class="title">Admin sozlamalari</h1>
+        <p class="desc">Joriy admin profili haqida ma'lumot</p>
 
-      <!-- ===== SOTUVCHILAR ===== -->
-      <section class="section" id="sec-sotuvchilar">
-        <h1 class="title">Sotuvchilar</h1>
-        <p class="desc">Tizimga ulangan do'kon egalari</p>
-        <div class="seller-list">
-          <div class="seller-card">
-            <span class="seller-av">GB</span>
-            <div><div class="seller-name">Guliston Bozor</div><div class="seller-village">Zomin tumani</div>
-              <div class="seller-meta"><span>214 buyurtma</span><span>&#9733; 4.8</span></div></div>
-          </div>
-          <div class="seller-card">
-            <span class="seller-av">BD</span>
-            <div><div class="seller-name">Baraka Do'koni</div><div class="seller-village">Bulung'ur tumani</div>
-              <div class="seller-meta"><span>158 buyurtma</span><span>&#9733; 4.6</span></div></div>
-          </div>
-          <div class="seller-card">
-            <span class="seller-av">NN</span>
-            <div><div class="seller-name">Nozu-Ne'mat</div><div class="seller-village">Urgut tumani</div>
-              <div class="seller-meta"><span>301 buyurtma</span><span>&#9733; 4.9</span></div></div>
-          </div>
-          <div class="seller-card">
-            <span class="seller-av">QD</span>
-            <div><div class="seller-name">Qishloq Do'koni</div><div class="seller-village">Payariq tumani</div>
-              <div class="seller-meta"><span>92 buyurtma</span><span>&#9733; 4.4</span></div></div>
-          </div>
+        <div class="settings-card">
+          <div class="settings-row"><span>Login</span><span id="settingsLogin">—</span></div>
+          <div class="settings-row"><span>To'liq ism</span><span id="settingsName">—</span></div>
+          <div class="settings-row"><span>Rol</span><span>Admin</span></div>
         </div>
-      </section>
-
-      <!-- ===== ANALITIKA ===== -->
-      <section class="section" id="sec-analitika">
-        <h1 class="title">Analitika</h1>
-        <p class="desc">Haftalik buyurtmalar dinamikasi</p>
-        <div class="panel-box" style="padding:20px;">
-          <div class="bars">
-            <div class="bar-col"><div class="bar" style="height:60%"></div><div class="bar-lbl">Dush</div></div>
-            <div class="bar-col"><div class="bar" style="height:78%"></div><div class="bar-lbl">Sesh</div></div>
-            <div class="bar-col"><div class="bar" style="height:45%"></div><div class="bar-lbl">Chor</div></div>
-            <div class="bar-col"><div class="bar" style="height:90%"></div><div class="bar-lbl">Pay</div></div>
-            <div class="bar-col"><div class="bar" style="height:70%"></div><div class="bar-lbl">Jum</div></div>
-            <div class="bar-col"><div class="bar" style="height:100%"></div><div class="bar-lbl">Shan</div></div>
-            <div class="bar-col"><div class="bar" style="height:55%"></div><div class="bar-lbl">Yak</div></div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ===== BOG'LANISH ===== -->
-      <section class="section" id="sec-boglanish">
-        <h1 class="title">Admin bilan bog'lanish</h1>
-        <p class="desc">Sotuvchilar va xaridorlardan kelgan murojaatlar</p>
-
-        <div class="msg-list">
-          <div class="msg"><div class="msg-top"><span class="msg-from">Guliston Bozor</span><span>2 soat oldin</span></div>
-            <div class="msg-text">Yangi mahsulot toifasini qo'shishda yordam kerak edi.</div></div>
-          <div class="msg"><div class="msg-top"><span class="msg-from">Sardor Yusupov (xaridor)</span><span>Kecha</span></div>
-            <div class="msg-text">Buyurtmam #10284 qachon yetib keladi?</div></div>
-        </div>
-
-        <div class="contact-form">
-          <label>Ism</label>
-          <input type="text" placeholder="Ismingiz">
-          <label>Xabar</label>
-          <textarea rows="4" placeholder="Xabaringizni yozing..."></textarea>
-          <button type="button">Yuborish</button>
-        </div>
+        <p class="settings-note">Parolni o'zgartirish va boshqa sozlamalar tez orada qo'shiladi.</p>
       </section>
 
     </div>
+  </div>
+</div>
+
+<!-- ===== DO'KON QO'SHISH MODAL ===== -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-box">
+    <h3>Yangi do'kon qo'shish</h3>
+    <p class="modal-desc">Do'kon va uning egasi uchun kirish ma'lumotlari yaratiladi</p>
+
+    <div class="modal-error" id="modalError"></div>
+
+    <form id="addShopForm">
+      <div class="modal-field">
+        <label for="shopName">Do'kon nomi</label>
+        <input type="text" id="shopName" placeholder="masalan: Guliston Bozor" required>
+      </div>
+      <div class="modal-field">
+        <label for="shopVillage">Hudud / qishloq</label>
+        <input type="text" id="shopVillage" placeholder="masalan: Zomin tumani">
+      </div>
+      <div class="modal-field">
+        <label for="ownerName">Egasi to'liq ismi</label>
+        <input type="text" id="ownerName" placeholder="Ism Familiya" required>
+      </div>
+      <div class="modal-field">
+        <label for="ownerLogin">Egasi uchun login</label>
+        <input type="text" id="ownerLogin" placeholder="login" required>
+      </div>
+      <div class="modal-field">
+        <label for="ownerPassword">Egasi uchun parol</label>
+        <input type="password" id="ownerPassword" placeholder="kamida 6 belgi" required>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" id="closeAddShop">Bekor qilish</button>
+        <button type="submit" class="btn-submit" id="submitAddShop">Qo'shish</button>
+      </div>
+    </form>
   </div>
 </div>
 
@@ -437,6 +400,8 @@
   document.getElementById('adminName').textContent = currentUser.login || 'admin';
   document.getElementById('adminInitials').textContent =
     (currentUser.full_name || currentUser.login || 'A').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('settingsLogin').textContent = currentUser.login || '—';
+  document.getElementById('settingsName').textContent = currentUser.full_name || '—';
 
   document.getElementById('logoutBtn').addEventListener('click', ()=>{
     localStorage.removeItem('dkassa_token');
@@ -444,30 +409,133 @@
     window.location.href = 'admin-login.html';
   });
 
-  // ---- Live stats from backend ----
-  fetch(API_BASE + '/admin/stats', {
-    headers: { 'Authorization': 'Bearer ' + token }
-  })
-  .then(res => {
-    if(res.status === 401 || res.status === 403){
-      localStorage.removeItem('dkassa_token');
-      localStorage.removeItem('dkassa_user');
-      window.location.href = 'admin-login.html';
-      return null;
+  function authFetch(path, opts = {}){
+    return fetch(API_BASE + path, {
+      ...opts,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token,
+        ...(opts.headers || {})
+      }
+    }).then(res => {
+      if(res.status === 401){
+        localStorage.removeItem('dkassa_token');
+        localStorage.removeItem('dkassa_user');
+        window.location.href = 'admin-login.html';
+        throw new Error('unauthorized');
+      }
+      return res;
+    });
+  }
+
+  // ---- Live stats ----
+  authFetch('/admin/stats')
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById('statOrders').textContent = data.totalOrders ?? '0';
+      document.getElementById('statSellers').textContent = data.totalSellers ?? '0';
+      document.getElementById('statBuyers').textContent = data.totalBuyers ?? '0';
+      document.getElementById('statRevenue').textContent = Number(data.todayRevenue || 0).toLocaleString('uz-UZ');
+    })
+    .catch(()=>{});
+
+  // ---- Do'konlar ----
+  const shopsContainer = document.getElementById('shopsContainer');
+
+  function renderShops(shops){
+    if(!shops.length){
+      shopsContainer.innerHTML = `
+        <div class="shops-empty">
+          <div class="big">🏬</div>
+          Hozircha do'konlar mavjud emas.<br>Birinchi do'konni qo'shish uchun yuqoridagi tugmani bosing.
+        </div>`;
+      return;
     }
-    return res.json();
-  })
-  .then(data => {
-    if(!data) return;
-    document.getElementById('statOrders').textContent = data.totalOrders;
-    document.getElementById('statSellers').textContent = data.totalSellers;
-    document.getElementById('statBuyers').textContent = data.totalBuyers;
-    document.getElementById('statRevenue').textContent = Number(data.todayRevenue).toLocaleString('uz-UZ');
-  })
-  .catch(()=>{
-    // Backend ishga tushmagan bo'lsa, kartalarda "—" ko'rinishicha qoladi
+    shopsContainer.innerHTML = `
+      <div class="shop-list">
+        ${shops.map(s => `
+          <div class="shop-card">
+            <span class="shop-av">${(s.name || '?').slice(0,2).toUpperCase()}</span>
+            <div>
+              <div class="shop-name">${escapeHtml(s.name)}</div>
+              <div class="shop-village">${escapeHtml(s.village || "Hudud ko'rsatilmagan")}</div>
+              <div class="shop-owner">Egasi: <b>${escapeHtml(s.owner_name)}</b> (${escapeHtml(s.owner_login)})</div>
+            </div>
+          </div>
+        `).join('')}
+      </div>`;
+  }
+
+  function escapeHtml(str){
+    return String(str || '').replace(/[&<>"']/g, m => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    }[m]));
+  }
+
+  function loadShops(){
+    shopsContainer.innerHTML = '<div class="loading-row">Yuklanmoqda...</div>';
+    authFetch('/admin/shops')
+      .then(res => res.json())
+      .then(data => renderShops(data.shops || []))
+      .catch(()=>{
+        shopsContainer.innerHTML = '<div class="loading-row">Yuklab bo\'lmadi. Sahifani yangilab ko\'ring.</div>';
+      });
+  }
+
+  // ---- Modal ----
+  const modalOverlay = document.getElementById('modalOverlay');
+  const addShopForm = document.getElementById('addShopForm');
+  const modalError = document.getElementById('modalError');
+  const submitBtn = document.getElementById('submitAddShop');
+
+  function openModal(){
+    modalError.classList.remove('show');
+    addShopForm.reset();
+    modalOverlay.classList.add('show');
+  }
+  function closeModal(){ modalOverlay.classList.remove('show'); }
+
+  document.getElementById('openAddShop').addEventListener('click', openModal);
+  document.getElementById('closeAddShop').addEventListener('click', closeModal);
+  modalOverlay.addEventListener('click', (e)=>{ if(e.target === modalOverlay) closeModal(); });
+
+  addShopForm.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    modalError.classList.remove('show');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Qo\'shilmoqda...';
+
+    try{
+      const res = await authFetch('/admin/shops', {
+        method: 'POST',
+        body: JSON.stringify({
+          shopName: document.getElementById('shopName').value.trim(),
+          village: document.getElementById('shopVillage').value.trim(),
+          ownerName: document.getElementById('ownerName').value.trim(),
+          ownerLogin: document.getElementById('ownerLogin').value.trim(),
+          ownerPassword: document.getElementById('ownerPassword').value
+        })
+      });
+      const data = await res.json();
+
+      if(!res.ok){
+        modalError.textContent = data.error || 'Xatolik yuz berdi.';
+        modalError.classList.add('show');
+        return;
+      }
+
+      closeModal();
+      loadShops();
+    } catch(err){
+      modalError.textContent = 'Serverga ulanib bo\'lmadi.';
+      modalError.classList.add('show');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Qo\'shish';
+    }
   });
 
+  // ---- Sidebar / navigation ----
   const sidebar = document.getElementById('sidebar');
   const main = document.getElementById('main');
   const overlay = document.getElementById('overlay');
@@ -486,16 +554,12 @@
   }
   hamburger.addEventListener('click', toggleSidebar);
   overlay.addEventListener('click', toggleSidebar);
-
   if(isMobile()){ sidebar.classList.add('closed'); }
 
   const titles = {
-    dashboard: ['Dashboard', "Umumiy holat va statistika"],
-    buyurtmalar: ['Buyurtmalar', "Barcha buyurtmalar ro'yxati"],
-    mahsulotlar: ['Mahsulotlar', "Do'konlardagi mahsulotlar"],
-    sotuvchilar: ['Sotuvchilar', "Ulangan do'kon egalari"],
-    analitika: ['Analitika', "Statistika va grafiklar"],
-    boglanish: ["Admin bilan bog'lanish", "Kelgan murojaatlar"]
+    dashboard: ['Dashboard sozlash', "Umumiy holat va statistika"],
+    dokonlar: ["Do'konlar", "Tizimdagi barcha do'konlar"],
+    sozlamalar: ['Admin sozlamalari', 'Profil va tizim sozlamalari']
   };
 
   document.querySelectorAll('.nav-item').forEach(btn=>{
@@ -507,6 +571,9 @@
       document.getElementById('sec-'+key).classList.add('active');
       document.getElementById('pageTitle').textContent = titles[key][0];
       document.getElementById('pageSub').textContent = titles[key][1];
+
+      if(key === 'dokonlar'){ loadShops(); }
+
       if(isMobile()){
         sidebar.classList.add('closed');
         overlay.classList.remove('show');
