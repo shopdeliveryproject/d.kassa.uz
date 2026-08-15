@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>d.kassa.uz — Admin kirish</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{ box-sizing:border-box; }
+  html,body{
+    margin:0; padding:0; min-height:100vh;
+    background:#e9e6df;
+    font-family:'Manrope',sans-serif;
+    display:flex; align-items:center; justify-content:center;
+    padding: 40px 16px;
+  }
+
+  .browser{
+    width:100%;
+    max-width: 1040px;
+    border-radius: 14px;
+    overflow:hidden;
+    background:#1b1b1b;
+    box-shadow: 0 50px 90px -30px rgba(0,0,0,0.45);
+    border: 1px solid rgba(0,0,0,0.4);
+  }
+
+  .page{
+    position:relative;
+    min-height: 560px;
+    overflow:hidden;
+    background: linear-gradient(180deg,#bcd8e6 0%, #d7c79b 38%, #c99a5b 60%, #8a5a34 100%);
+    display:flex; flex-direction:column;
+  }
+
+  .sun{ position:absolute; top:36px; right:120px; width:70px;height:70px;border-radius:50%;
+    background: radial-gradient(circle, #fff4d6, #ffe9a8 60%, transparent 72%); filter: blur(1px); }
+
+  .mountains{ position:absolute; left:0; right:0; bottom:180px; height:140px;
+    background: linear-gradient(180deg,#c9a06a,#a9784a);
+    clip-path: polygon(0% 100%, 0% 55%, 10% 40%, 22% 60%, 35% 30%, 48% 55%, 60% 20%, 74% 50%, 88% 35%, 100% 60%, 100% 100%);
+    opacity:0.85; }
+
+  .minaret{ position:absolute; right: 9%; bottom:120px; width:26px; height:230px; }
+  .minaret .shaft{ position:absolute; bottom:0; left:50%; transform:translateX(-50%); width:22px; height:190px;
+    background: linear-gradient(90deg,#d8b788,#b98f5c 45%,#8f6a3f); border-radius: 3px 3px 0 0; }
+  .minaret .band{ position:absolute; left:50%; transform:translateX(-50%); width:22px; height:10px;
+    background: repeating-linear-gradient(90deg,#1f8a82 0 4px, #e6a233 4px 8px); }
+  .minaret .band.b1{ bottom:60px; }
+  .minaret .band.b2{ bottom:120px; }
+  .minaret .dome{ position:absolute; bottom:186px; left:50%; transform:translateX(-50%); width:38px; height:38px;
+    background: radial-gradient(circle at 35% 30%, #4fc3b8, #1f8a82 70%); border-radius:50% 50% 50% 50% / 60% 60% 40% 40%; }
+  .minaret .spire{ position:absolute; bottom:222px; left:50%; transform:translateX(-50%); width:2px; height:16px; background:#e6a233; }
+
+  .buildings{ position:absolute; left:0; right:0; bottom:0; height:190px; display:flex; align-items:flex-end; }
+  .bldg{ height:100%; flex:1; position:relative; }
+  .bldg.b1{ height:60%; background:linear-gradient(180deg,#c99a5b,#a9764a); border-radius: 6px 6px 0 0; }
+  .bldg.b2{ height:78%; background:linear-gradient(180deg,#b98753,#8f6640); }
+  .bldg.b3{ height:52%; background:linear-gradient(180deg,#caa06a,#a97a4c); }
+  .bldg.b4{ height:88%; background:linear-gradient(180deg,#a97a4c,#7d5836); }
+  .bldg.b5{ height:66%; background:linear-gradient(180deg,#c2986066,#a97a4c); }
+
+  .awning{ position:absolute; bottom:0; height:34px; width:100%;
+    background: repeating-linear-gradient(90deg,#e6a233 0 16px,#c25a3a 16px 32px);
+    clip-path: polygon(0 0,100% 0,96% 100%,4% 100%); }
+  .ground{ position:absolute; left:0; right:0; bottom:0; height:24px; background: linear-gradient(180deg,#8a5a34,#6e4527); }
+
+  .center{
+    position:relative; z-index:2;
+    flex:1;
+    display:flex; align-items:center; justify-content:center;
+    padding: 30px 16px;
+  }
+
+  .card{
+    width:100%; max-width: 400px;
+    background: rgba(15,15,15,0.6);
+    backdrop-filter: blur(6px);
+    border-radius: 18px;
+    padding: 30px 30px 26px;
+    animation: rise .6s cubic-bezier(.2,.8,.2,1) both;
+  }
+  @keyframes rise{ from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:translateY(0);} }
+
+  .back-link{
+    display:inline-flex; align-items:center; gap:6px;
+    color: rgba(255,255,255,0.6);
+    font-size: 12.5px;
+    text-decoration:none;
+    margin-bottom: 16px;
+  }
+  .back-link:hover{ color:#f4c14a; }
+
+  .badge-role{
+    display:flex; flex-direction:column; align-items:center; gap:10px;
+    margin-bottom: 18px;
+  }
+  .badge-role .avatar{
+    width:64px; height:64px; border-radius:50%;
+    background: radial-gradient(circle at 35% 30%, #6bb7e8, #2f7fc0);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .badge-role h2{
+    margin:0; color:#fff; font-size:19px; font-weight:800;
+  }
+  .badge-role p{
+    margin:0; color: rgba(255,255,255,0.55); font-size:12.5px;
+  }
+
+  form{ display:flex; flex-direction:column; gap:14px; margin-top: 6px; }
+  label{
+    font-size:12px; font-weight:700; letter-spacing:0.3px;
+    color:#f4c14a; text-transform:uppercase; margin-bottom:6px; display:block;
+  }
+  .field{ display:flex; flex-direction:column; }
+  .input-wrap{ position:relative; }
+  input{
+    width:100%;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.14);
+    border-radius: 10px;
+    padding: 12px 14px;
+    color:#fff;
+    font-size: 14.5px;
+    font-family:'Manrope',sans-serif;
+    outline:none;
+    transition: border-color .15s ease, background .15s ease;
+  }
+  input::placeholder{ color: rgba(255,255,255,0.35); }
+  input:focus{ border-color:#f4c14a; background: rgba(255,255,255,0.12); }
+
+  .toggle-eye{
+    position:absolute; right:12px; top:50%; transform:translateY(-50%);
+    background:none; border:none; cursor:pointer;
+    color: rgba(255,255,255,0.55); font-size:13px; padding:4px;
+  }
+  .toggle-eye:hover{ color:#fff; }
+
+  .error{
+    display:none;
+    background: rgba(198,72,53,0.18);
+    border: 1px solid rgba(198,72,53,0.45);
+    color:#ffb3a3;
+    font-size:12.5px;
+    padding: 9px 12px;
+    border-radius:8px;
+  }
+  .error.show{ display:block; }
+
+  .submit{
+    margin-top:6px;
+    border:none; cursor:pointer;
+    background: linear-gradient(135deg,#f4c14a,#e08b2a);
+    color:#241c15;
+    font-weight:800;
+    font-size:14.5px;
+    padding: 13px 14px;
+    border-radius: 10px;
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .submit:hover{ transform:translateY(-2px); box-shadow: 0 10px 22px -10px rgba(244,193,74,0.6); }
+  .submit:active{ transform:translateY(0); }
+
+  .hint{
+    margin-top:14px;
+    text-align:center;
+    font-size:11px;
+    color: rgba(255,255,255,0.35);
+  }
+
+  .credit{
+    position:relative; z-index:2;
+    text-align:center;
+    color: rgba(255,255,255,0.85);
+    font-style: italic;
+    font-size: 13px;
+    padding: 4px 0 22px;
+    text-shadow: 0 1px 6px rgba(0,0,0,0.4);
+  }
+</style>
+</head>
+<body>
+
+<div class="browser">
+  <div class="page">
+    <div class="sun"></div>
+    <div class="mountains"></div>
+    <div class="minaret">
+      <div class="shaft"></div>
+      <div class="band b1"></div>
+      <div class="band b2"></div>
+      <div class="dome"></div>
+      <div class="spire"></div>
+    </div>
+    <div class="buildings">
+      <div class="bldg b1"></div><div class="bldg b2"></div><div class="bldg b3"></div>
+      <div class="bldg b4"></div><div class="bldg b5"></div>
+    </div>
+    <div class="awning"></div>
+    <div class="ground"></div>
+
+    <div class="center">
+      <div class="card">
+        <a class="back-link" href="index.html">&#8592; Profil tanlashga qaytish</a>
+
+        <div class="badge-role">
+          <span class="avatar">
+            <svg width="32" height="32" viewBox="0 0 46 46" fill="none">
+              <circle cx="23" cy="16" r="7" fill="#fff"/>
+              <path d="M23 24c-9 0-13 5-13 11v3h26v-3c0-6-4-11-13-11Z" fill="#fff"/>
+            </svg>
+          </span>
+          <h2>Admin sifatida kirish</h2>
+          <p>Boshqaruv paneliga kirish uchun login va parolni kiriting</p>
+        </div>
+
+        <div class="error" id="error">Login yoki parol xato. Qaytadan urinib ko'ring.</div>
+
+        <form id="loginForm">
+          <div class="field">
+            <label for="login">Login</label>
+            <input type="text" id="login" name="login" placeholder="loginingizni kiriting" autocomplete="username" required>
+          </div>
+          <div class="field">
+            <label for="parol">Parol</label>
+            <div class="input-wrap">
+              <input type="password" id="parol" name="parol" placeholder="parolingizni kiriting" autocomplete="current-password" required>
+              <button type="button" class="toggle-eye" id="toggleEye">&#128065;</button>
+            </div>
+          </div>
+          <button type="submit" class="submit">Kirish</button>
+        </form>
+
+        <div class="hint">Kirish faqat vakolatli administratorlar uchun</div>
+      </div>
+    </div>
+
+    <div class="credit">created by radjabov.a</div>
+  </div>
+</div>
+
+<script>
+  const API_BASE = '/api';
+
+  const form = document.getElementById('loginForm');
+  const errorBox = document.getElementById('error');
+  const eyeBtn = document.getElementById('toggleEye');
+  const parolInput = document.getElementById('parol');
+  const submitBtn = form.querySelector('.submit');
+
+  eyeBtn.addEventListener('click', ()=>{
+    parolInput.type = parolInput.type === 'password' ? 'text' : 'password';
+  });
+
+  function showError(msg){
+    errorBox.textContent = msg;
+    errorBox.classList.add('show');
+  }
+
+  form.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    errorBox.classList.remove('show');
+
+    const login = document.getElementById('login').value.trim();
+    const parol = parolInput.value;
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Tekshirilmoqda...';
+
+    try{
+      const res = await fetch(API_BASE + '/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ login, parol })
+      });
+      const data = await res.json();
+
+      if(!res.ok){
+        showError(data.error || 'Login yoki parol xato.');
+        return;
+      }
+
+      if(data.user.role !== 'admin'){
+        showError('Bu profil admin emas.');
+        return;
+      }
+
+      localStorage.setItem('dkassa_token', data.token);
+      localStorage.setItem('dkassa_user', JSON.stringify(data.user));
+      window.location.href = 'admin-dashboard.html';
+
+    } catch(err){
+      showError('Serverga ulanib bo\'lmadi. Internet aloqasini tekshiring.');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Kirish';
+    }
+  });
+</script>
+
+</body>
+</html>

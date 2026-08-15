@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>d.kassa.uz — Profil tanlang</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{ box-sizing:border-box; }
+  html,body{
+    margin:0; padding:0; min-height:100vh;
+    background:#e9e6df;
+    font-family:'Manrope',sans-serif;
+    display:flex; align-items:center; justify-content:center;
+    padding: 40px 16px;
+  }
+
+  /* ============ BROWSER WINDOW MOCKUP ============ */
+  .browser{
+    width:100%;
+    max-width: 1040px;
+    border-radius: 14px;
+    overflow:hidden;
+    background:#1b1b1b;
+    box-shadow: 0 50px 90px -30px rgba(0,0,0,0.45);
+    border: 1px solid rgba(0,0,0,0.4);
+  }
+
+  .titlebar{
+    display:flex; align-items:center; gap:10px;
+    padding: 10px 14px 0;
+    background: linear-gradient(#3a3a3a,#2c2c2c);
+  }
+  .dots{ display:flex; gap:7px; padding-bottom:8px; }
+  .dot{ width:12px; height:12px; border-radius:50%; }
+  .dot.red{ background:#ff5f57; }
+  .dot.yellow{ background:#febc2e; }
+  .dot.green{ background:#28c840; }
+
+  .tab{
+    margin-left:10px;
+    display:flex; align-items:center; gap:8px;
+    background:#e9e6df;
+    color:#2b2b2b;
+    font-size:12.5px;
+    padding:7px 12px 8px;
+    border-radius: 8px 8px 0 0;
+    max-width:220px;
+  }
+  .tab .favicon{
+    width:14px;height:14px;border-radius:3px;
+    background: linear-gradient(135deg,#e6a233,#1f8a82);
+    flex-shrink:0;
+  }
+  .tab span{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .tab .x{ margin-left:auto; color:#8a8a8a; font-size:13px; }
+
+  .addressbar{
+    background:#e9e6df;
+    display:flex; align-items:center; gap:10px;
+    padding: 8px 14px;
+  }
+  .nav-icons{ display:flex; gap:14px; color:#6b6b6b; font-size:15px; }
+  .url-pill{
+    flex:1;
+    background:#fff;
+    border-radius: 20px;
+    padding:6px 14px;
+    font-size:12.5px;
+    color:#3a3a3a;
+    display:flex; align-items:center; gap:8px;
+  }
+  .url-pill .lock{ color:#5a5a5a; font-size:11px; }
+  .right-icons{ display:flex; gap:12px; align-items:center; color:#6b6b6b; font-size:14px; }
+  .avatar-chip{
+    width:20px;height:20px;border-radius:50%;
+    background:#3a6df0; color:#fff; font-size:10px;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;
+  }
+
+  /* ============ PAGE / BAZAAR SCENE ============ */
+  .page{
+    position:relative;
+    min-height: 560px;
+    overflow:hidden;
+    background: linear-gradient(180deg,#bcd8e6 0%, #d7c79b 38%, #c99a5b 60%, #8a5a34 100%);
+  }
+
+  .sun{
+    position:absolute; top:36px; right:120px;
+    width:70px;height:70px;border-radius:50%;
+    background: radial-gradient(circle, #fff4d6, #ffe9a8 60%, transparent 72%);
+    filter: blur(1px);
+  }
+
+  .mountains{
+    position:absolute; left:0; right:0; bottom:180px; height:140px;
+    background: linear-gradient(180deg,#c9a06a,#a9784a);
+    clip-path: polygon(0% 100%, 0% 55%, 10% 40%, 22% 60%, 35% 30%, 48% 55%, 60% 20%, 74% 50%, 88% 35%, 100% 60%, 100% 100%);
+    opacity:0.85;
+  }
+
+  .minaret{
+    position:absolute; right: 9%; bottom:120px;
+    width:26px; height:230px;
+  }
+  .minaret .shaft{
+    position:absolute; bottom:0; left:50%; transform:translateX(-50%);
+    width:22px; height:190px;
+    background: linear-gradient(90deg,#d8b788,#b98f5c 45%,#8f6a3f);
+    border-radius: 3px 3px 0 0;
+  }
+  .minaret .band{
+    position:absolute; left:50%; transform:translateX(-50%);
+    width:22px; height:10px;
+    background: repeating-linear-gradient(90deg,#1f8a82 0 4px, #e6a233 4px 8px);
+  }
+  .minaret .band.b1{ bottom:60px; }
+  .minaret .band.b2{ bottom:120px; }
+  .minaret .dome{
+    position:absolute; bottom:186px; left:50%; transform:translateX(-50%);
+    width:38px; height:38px;
+    background: radial-gradient(circle at 35% 30%, #4fc3b8, #1f8a82 70%);
+    border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;
+  }
+  .minaret .spire{
+    position:absolute; bottom:222px; left:50%; transform:translateX(-50%);
+    width:2px; height:16px; background:#e6a233;
+  }
+
+  .buildings{
+    position:absolute; left:0; right:0; bottom:0; height:190px;
+    display:flex; align-items:flex-end;
+  }
+  .bldg{ height:100%; flex:1; position:relative; }
+  .bldg.b1{ height:60%; background:linear-gradient(180deg,#c99a5b,#a9764a); border-radius: 6px 6px 0 0; }
+  .bldg.b2{ height:78%; background:linear-gradient(180deg,#b98753,#8f6640); }
+  .bldg.b3{ height:52%; background:linear-gradient(180deg,#caa06a,#a97a4c); }
+  .bldg.b4{ height:88%; background:linear-gradient(180deg,#a97a4c,#7d5836); }
+  .bldg.b5{ height:66%; background:linear-gradient(180deg,#c2986066,#a97a4c); }
+  .bldg .win{ position:absolute; width:14px;height:18px; background:#3a6f7a; border-radius:2px; opacity:0.75; }
+
+  .awning{
+    position:absolute; bottom:0; height:34px; width:100%;
+    background: repeating-linear-gradient(90deg,#e6a233 0 16px,#c25a3a 16px 32px);
+    clip-path: polygon(0 0,100% 0,96% 100%,4% 100%);
+  }
+
+  .ground{
+    position:absolute; left:0; right:0; bottom:0; height:24px;
+    background: linear-gradient(180deg,#8a5a34,#6e4527);
+  }
+
+  /* ============ HERO TEXT ============ */
+  .hero{
+    position:relative; z-index:2;
+    text-align:center;
+    padding-top: 34px;
+  }
+  .script{
+    font-family:'Great Vibes', cursive;
+    font-size: clamp(42px, 7vw, 66px);
+    color:#fff;
+    text-shadow: 0 2px 0 #6b4a2a, 0 6px 18px rgba(0,0,0,0.35);
+    margin:0;
+    line-height:1;
+  }
+  .domain-big{
+    font-weight:800;
+    font-size: clamp(22px, 3.4vw, 30px);
+    color:#fff;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.35);
+    margin-top: 6px;
+    letter-spacing:0.5px;
+  }
+
+  /* ============ PANEL ============ */
+  .panel{
+    position:relative; z-index:2;
+    max-width: 700px;
+    margin: 26px auto 0;
+    background: rgba(15,15,15,0.55);
+    backdrop-filter: blur(6px);
+    border-radius: 18px;
+    padding: 26px 30px 30px;
+  }
+  .panel h2{
+    text-align:center;
+    color:#f4c14a;
+    font-size: clamp(20px,2.6vw,26px);
+    font-weight:800;
+    margin: 0 0 20px;
+  }
+  .cards{
+    display:grid;
+    grid-template-columns: repeat(3,1fr);
+    gap:16px;
+  }
+  @media (max-width:620px){
+    .cards{ grid-template-columns: 1fr; }
+    .panel{ padding: 22px 18px 26px; }
+  }
+  .card{
+    appearance:none; border:none; cursor:pointer;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius:16px;
+    padding: 20px 14px 16px;
+    display:flex; flex-direction:column; align-items:center; gap:12px;
+    transition: transform .2s ease, background .2s ease, box-shadow .2s ease;
+  }
+  .card:hover{
+    transform: translateY(-4px);
+    background: rgba(255,255,255,0.1);
+    box-shadow: 0 16px 30px -14px rgba(0,0,0,0.6);
+  }
+  .card:focus-visible{ outline: 2px solid #f4c14a; outline-offset:2px; }
+
+  .avatar{
+    width:80px; height:80px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    overflow:hidden;
+  }
+  .avatar.blue{ background: radial-gradient(circle at 35% 30%, #6bb7e8, #2f7fc0); }
+  .avatar.gold{ background: radial-gradient(circle at 35% 30%, #f6cf6b, #e8a233); }
+
+  .card-name{ color:#fff; font-weight:800; font-size:16px; }
+
+  /* ============ FOOTER ============ */
+  .credit{
+    position:relative; z-index:2;
+    text-align:center;
+    color: rgba(255,255,255,0.85);
+    font-style: italic;
+    font-size: 13px;
+    padding: 20px 0 26px;
+    text-shadow: 0 1px 6px rgba(0,0,0,0.4);
+  }
+</style>
+</head>
+<body>
+
+<div class="browser">
+
+  <div class="page">
+    <div class="sun"></div>
+    <div class="mountains"></div>
+
+    <div class="minaret">
+      <div class="shaft"></div>
+      <div class="band b1"></div>
+      <div class="band b2"></div>
+      <div class="dome"></div>
+      <div class="spire"></div>
+    </div>
+
+    <div class="buildings">
+      <div class="bldg b1"></div>
+      <div class="bldg b2"></div>
+      <div class="bldg b3"></div>
+      <div class="bldg b4"></div>
+      <div class="bldg b5"></div>
+    </div>
+    <div class="awning"></div>
+    <div class="ground"></div>
+
+    <div class="hero">
+      <p class="script">Xush kelibsiz</p>
+      <div class="domain-big">d.kassa.uz</div>
+    </div>
+
+    <div class="panel">
+      <h2>Profil tanlang</h2>
+      <div class="cards">
+
+        <button class="card" data-role="admin" type="button">
+          <span class="avatar blue">
+            <svg width="46" height="46" viewBox="0 0 46 46" fill="none">
+              <circle cx="23" cy="16" r="7" fill="#fff"/>
+              <path d="M23 24c-9 0-13 5-13 11v3h26v-3c0-6-4-11-13-11Z" fill="#fff"/>
+              <rect x="14" y="30" width="18" height="10" rx="2" fill="#2b3a55"/>
+              <path d="M18 30v-2a5 5 0 0 1 10 0v2" stroke="#2b3a55" stroke-width="2" fill="none"/>
+            </svg>
+          </span>
+          <span class="card-name">Admin</span>
+        </button>
+
+        <button class="card" data-role="sotuvchi" type="button">
+          <span class="avatar gold">
+            <svg width="46" height="46" viewBox="0 0 46 46" fill="none">
+              <circle cx="23" cy="15" r="7" fill="#3a2a1a"/>
+              <path d="M23 22c-8 0-12 5-12 11v3h24v-3c0-6-4-11-12-11Z" fill="#2f7a4a"/>
+              <circle cx="30" cy="30" r="6" fill="#e8e2d0"/>
+              <circle cx="27" cy="27" r="2" fill="#c25a3a"/>
+              <circle cx="32" cy="26" r="2" fill="#c25a3a"/>
+              <circle cx="33" cy="31" r="2" fill="#e6a233"/>
+            </svg>
+          </span>
+          <span class="card-name">Sotuvchi</span>
+        </button>
+
+        <button class="card" data-role="xaridor" type="button">
+          <span class="avatar gold">
+            <svg width="46" height="46" viewBox="0 0 46 46" fill="none">
+              <circle cx="23" cy="15" r="7" fill="#4a2f1f"/>
+              <path d="M23 22c-8 0-12 5-12 11v3h24v-3c0-6-4-11-12-11Z" fill="#c25a3a"/>
+              <rect x="26" y="24" width="8" height="12" rx="2" fill="#2b2b2b"/>
+              <rect x="12" y="30" width="7" height="9" rx="1.5" fill="#1f8a82"/>
+              <rect x="30" y="30" width="7" height="9" rx="1.5" fill="#e6a233"/>
+            </svg>
+          </span>
+          <span class="card-name">Xaridor</span>
+        </button>
+
+      </div>
+    </div>
+
+    <div class="credit">created by radjabov.a</div>
+  </div>
+
+</div>
+
+<script>
+  document.querySelectorAll('.card').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const role = btn.dataset.role;
+      if(role === 'admin'){
+        window.location.href = 'admin-login.html';
+      } else {
+        alert('Tanlandi: ' + btn.querySelector('.card-name').textContent + '\n(Bu profil uchun sahifa hali tayyorlanmoqda)');
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

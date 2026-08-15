@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>d.kassa.uz — Admin panel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:        #211a12;
+    --night:      #1c2c46;
+    --night-2:    #223457;
+    --turquoise:  #1f8a82;
+    --turquoise-l:#59b8ae;
+    --saffron:    #e6a233;
+    --brick:      #b6512f;
+    --parchment:  #f7efdd;
+    --parchment-2:#efe4c8;
+    --paper:      #fbf7ec;
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; font-family:'Manrope',sans-serif; color:var(--ink); background:var(--parchment); }
+
+  .layout{ display:flex; min-height:100vh; }
+
+  /* ============ SIDEBAR ============ */
+  .sidebar{
+    width: 264px;
+    flex-shrink:0;
+    background: linear-gradient(180deg,#1c2c46,#182339);
+    color: var(--parchment);
+    display:flex; flex-direction:column;
+    position:fixed; top:0; bottom:0; left:0;
+    transform: translateX(0);
+    transition: transform .25s ease;
+    z-index: 40;
+  }
+  .sidebar.closed{ transform: translateX(-100%); }
+
+  .brand{
+    display:flex; align-items:center; gap:10px;
+    padding: 22px 22px 16px;
+  }
+  .brand .mark{
+    width:34px; height:34px; border-radius:9px;
+    background: linear-gradient(135deg,var(--saffron),var(--turquoise));
+    display:flex; align-items:center; justify-content:center;
+    font-weight:800; color:#1c2c46; font-size:14px;
+  }
+  .brand .name{ font-weight:800; font-size:16px; letter-spacing:0.2px; }
+  .brand .sub{ font-size:10.5px; color: rgba(247,239,221,0.45); font-family:'IBM Plex Mono',monospace; }
+
+  .trim-mini{
+    height:6px; margin: 4px 0 14px;
+    background-image: repeating-linear-gradient(45deg,var(--saffron) 0 8px,var(--turquoise) 8px 16px,var(--brick) 16px 24px);
+    opacity:0.8;
+  }
+
+  nav{ flex:1; padding: 4px 14px; display:flex; flex-direction:column; gap:3px; overflow-y:auto; }
+  .nav-item{
+    display:flex; align-items:center; gap:12px;
+    padding: 11px 14px;
+    border-radius: 10px;
+    color: rgba(247,239,221,0.72);
+    font-size: 14px; font-weight:600;
+    cursor:pointer;
+    border:none; background:none; width:100%; text-align:left;
+    font-family:'Manrope',sans-serif;
+    transition: background .15s ease, color .15s ease;
+  }
+  .nav-item svg{ width:18px; height:18px; flex-shrink:0; opacity:0.85; }
+  .nav-item:hover{ background: rgba(255,255,255,0.06); color:#fff; }
+  .nav-item.active{ background: rgba(230,162,51,0.15); color: var(--saffron); }
+  .nav-item.active svg{ opacity:1; }
+
+  .sidebar-foot{
+    padding: 16px 22px 20px;
+    font-size: 11px;
+    color: rgba(247,239,221,0.35);
+    font-style: italic;
+  }
+
+  .overlay{
+    display:none;
+    position:fixed; inset:0; background:rgba(0,0,0,0.35); z-index:30;
+  }
+  .overlay.show{ display:block; }
+
+  /* ============ MAIN ============ */
+  .main{ flex:1; margin-left: 264px; transition: margin-left .25s ease; min-width:0; }
+  .main.full{ margin-left:0; }
+
+  .topbar{
+    position:sticky; top:0; z-index:20;
+    background: var(--paper);
+    border-bottom: 1px solid rgba(33,26,18,0.08);
+    display:flex; align-items:center; gap:14px;
+    padding: 14px 24px;
+  }
+  .hamburger{
+    background:none; border:none; cursor:pointer;
+    width:38px; height:38px; border-radius:9px;
+    display:flex; align-items:center; justify-content:center;
+    flex-direction:column; gap:4px;
+    transition: background .15s ease;
+  }
+  .hamburger:hover{ background: rgba(33,26,18,0.06); }
+  .hamburger span{ width:18px; height:2px; background: var(--ink); border-radius:2px; }
+
+  .page-title{ font-weight:800; font-size:18px; }
+  .page-sub{ font-size:12px; color:#8a7c62; margin-top:1px; }
+  .topbar-right{ margin-left:auto; display:flex; align-items:center; gap:14px; }
+  .admin-chip{
+    display:flex; align-items:center; gap:9px;
+    background:#fff; border:1px solid rgba(33,26,18,0.08);
+    padding: 6px 12px 6px 6px; border-radius:30px;
+  }
+  .admin-chip .av{
+    width:26px;height:26px;border-radius:50%;
+    background: linear-gradient(135deg,#6bb7e8,#2f7fc0);
+    display:flex;align-items:center;justify-content:center;
+    color:#fff; font-weight:800; font-size:11px;
+  }
+  .admin-chip span{ font-size:12.5px; font-weight:700; }
+
+  .content{ padding: 26px 24px 60px; max-width:1200px; }
+  .section{ display:none; animation: fadein .25s ease; }
+  .section.active{ display:block; }
+  @keyframes fadein{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
+
+  h1.title{ font-size:22px; font-weight:800; margin:0 0 4px; }
+  p.desc{ color:#8a7c62; font-size:13.5px; margin:0 0 22px; }
+
+  /* ---- stat cards ---- */
+  .stats{ display:grid; grid-template-columns: repeat(4,1fr); gap:14px; margin-bottom:26px; }
+  @media(max-width:900px){ .stats{ grid-template-columns: repeat(2,1fr); } }
+  @media(max-width:520px){ .stats{ grid-template-columns: 1fr; } }
+  .stat{
+    background:#fff; border-radius:14px; padding:18px;
+    border: 1px solid rgba(33,26,18,0.06);
+  }
+  .stat .icon{
+    width:36px;height:36px;border-radius:10px;
+    display:flex;align-items:center;justify-content:center;
+    margin-bottom:12px;
+  }
+  .stat .icon svg{ width:18px;height:18px; }
+  .stat.c1 .icon{ background:rgba(31,138,130,0.12); }
+  .stat.c2 .icon{ background:rgba(230,162,51,0.15); }
+  .stat.c3 .icon{ background:rgba(182,81,47,0.12); }
+  .stat.c4 .icon{ background:rgba(43,74,112,0.1); }
+  .stat .num{ font-size:24px; font-weight:800; }
+  .stat .lbl{ font-size:12px; color:#8a7c62; margin-top:2px; }
+  .stat .delta{ font-size:11px; font-weight:700; margin-top:8px; }
+  .stat .delta.up{ color:#1f8a5a; }
+  .stat .delta.down{ color:#b6512f; }
+
+  /* ---- table ---- */
+  .panel-box{ background:#fff; border-radius:14px; border:1px solid rgba(33,26,18,0.06); overflow:hidden; }
+  .panel-box-head{ padding:16px 18px; border-bottom:1px solid rgba(33,26,18,0.06); display:flex; align-items:center; justify-content:space-between; }
+  .panel-box-head h3{ margin:0; font-size:15px; }
+  table{ width:100%; border-collapse:collapse; font-size:13px; }
+  th{ text-align:left; padding:11px 18px; color:#8a7c62; font-size:11.5px; text-transform:uppercase; letter-spacing:0.4px; border-bottom:1px solid rgba(33,26,18,0.06); }
+  td{ padding:13px 18px; border-bottom:1px solid rgba(33,26,18,0.05); }
+  tr:last-child td{ border-bottom:none; }
+  .badge{ display:inline-block; padding:4px 10px; border-radius:20px; font-size:11px; font-weight:700; }
+  .badge.yellow{ background:rgba(230,162,51,0.15); color:#a9721f; }
+  .badge.green{ background:rgba(31,138,90,0.14); color:#1f8a5a; }
+  .badge.red{ background:rgba(182,81,47,0.14); color:#b6512f; }
+  .badge.blue{ background:rgba(43,74,112,0.12); color:#2b4a70; }
+
+  /* ---- products grid ---- */
+  .grid-cards{ display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:14px; }
+  .prod-card{ background:#fff; border-radius:14px; border:1px solid rgba(33,26,18,0.06); padding:16px; }
+  .prod-thumb{ width:100%; height:80px; border-radius:10px; margin-bottom:12px; background: linear-gradient(135deg,var(--parchment-2),#e3d5ac); display:flex; align-items:center; justify-content:center; font-size:26px; }
+  .prod-name{ font-weight:700; font-size:14px; }
+  .prod-shop{ font-size:11.5px; color:#8a7c62; margin-top:2px; }
+  .prod-price{ margin-top:10px; font-weight:800; color:var(--brick); font-size:14px; }
+
+  /* ---- sellers ---- */
+  .seller-list{ display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:14px; }
+  .seller-card{ background:#fff; border-radius:14px; border:1px solid rgba(33,26,18,0.06); padding:16px; display:flex; gap:12px; align-items:flex-start; }
+  .seller-av{ width:44px;height:44px;border-radius:50%; background: linear-gradient(135deg,#f6cf6b,#e8a233); flex-shrink:0; display:flex;align-items:center;justify-content:center; font-weight:800; color:#5c3d10; }
+  .seller-name{ font-weight:700; font-size:14px; }
+  .seller-village{ font-size:11.5px; color:#8a7c62; margin-top:1px; }
+  .seller-meta{ display:flex; gap:10px; margin-top:8px; font-size:11px; color:#8a7c62; }
+
+  /* ---- analytics bars ---- */
+  .bars{ display:flex; align-items:flex-end; gap:14px; height:200px; padding: 10px 6px 0; }
+  .bar-col{ flex:1; display:flex; flex-direction:column; align-items:center; gap:8px; }
+  .bar{ width:100%; max-width:36px; border-radius:6px 6px 2px 2px; background: linear-gradient(180deg,var(--turquoise-l),var(--turquoise)); }
+  .bar-lbl{ font-size:10.5px; color:#8a7c62; }
+
+  /* ---- contact ---- */
+  .msg-list{ display:flex; flex-direction:column; gap:10px; margin-bottom:22px; }
+  .msg{ background:#fff; border-radius:12px; border:1px solid rgba(33,26,18,0.06); padding:14px 16px; }
+  .msg-top{ display:flex; justify-content:space-between; font-size:12px; color:#8a7c62; margin-bottom:6px; }
+  .msg-from{ font-weight:700; color:var(--ink); }
+  .msg-text{ font-size:13.5px; line-height:1.5; }
+
+  .contact-form{ background:#fff; border-radius:14px; border:1px solid rgba(33,26,18,0.06); padding:20px; max-width:520px; }
+  .contact-form label{ font-size:11.5px; font-weight:700; color:#8a7c62; text-transform:uppercase; letter-spacing:0.3px; }
+  .contact-form input, .contact-form textarea{
+    width:100%; margin-top:6px; margin-bottom:14px;
+    padding:11px 13px; border-radius:9px; border:1px solid rgba(33,26,18,0.12);
+    font-family:'Manrope',sans-serif; font-size:13.5px; resize:vertical;
+  }
+  .contact-form button{
+    border:none; cursor:pointer; background: linear-gradient(135deg,var(--saffron),#c07f1f);
+    color:#241c15; font-weight:800; padding:11px 20px; border-radius:9px; font-size:13.5px;
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+  <div class="overlay" id="overlay"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <span class="mark">DK</span>
+      <div>
+        <div class="name">d.kassa.uz</div>
+        <div class="sub">admin panel</div>
+      </div>
+    </div>
+    <div class="trim-mini"></div>
+
+    <nav>
+      <button class="nav-item active" data-section="dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="5" rx="1.5"/><rect x="13" y="11" width="8" height="10" rx="1.5"/><rect x="3" y="14" width="8" height="7" rx="1.5"/></svg>
+        Dashboard
+      </button>
+      <button class="nav-item" data-section="buyurtmalar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M6 3h9l3 3v15H6z"/><path d="M9 10h6M9 14h6M9 18h3"/></svg>
+        Buyurtmalar
+      </button>
+      <button class="nav-item" data-section="mahsulotlar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 8l-9-5-9 5 9 5 9-5Z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>
+        Mahsulotlar
+      </button>
+      <button class="nav-item" data-section="sotuvchilar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6"/><circle cx="17.5" cy="9" r="2.6"/><path d="M15.5 20c.3-2.6 1.9-4.3 4-4.6"/></svg>
+        Sotuvchilar
+      </button>
+      <button class="nav-item" data-section="analitika">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 20V10M11 20V4M18 20v-7"/><path d="M2 20h20"/></svg>
+        Analitika
+      </button>
+      <button class="nav-item" data-section="boglanish">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 5h16v12H8l-4 4V5Z"/></svg>
+        Admin bilan bog'lanish
+      </button>
+    </nav>
+
+    <div class="sidebar-foot">created by radjabov.a</div>
+  </aside>
+
+  <div class="main" id="main">
+
+    <div class="topbar">
+      <button class="hamburger" id="hamburger" aria-label="Menyu">
+        <span></span><span></span><span></span>
+      </button>
+      <div>
+        <div class="page-title" id="pageTitle">Dashboard</div>
+        <div class="page-sub" id="pageSub">Umumiy holat va statistika</div>
+      </div>
+      <div class="topbar-right">
+        <div class="admin-chip">
+          <span class="av" id="adminInitials">A</span>
+          <span id="adminName">admin</span>
+        </div>
+        <button id="logoutBtn" style="border:none;background:none;cursor:pointer;color:#8a7c62;font-size:12.5px;font-weight:700;">Chiqish</button>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ===== DASHBOARD ===== -->
+      <section class="section active" id="sec-dashboard">
+        <div class="stats">
+          <div class="stat c1">
+            <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="#1f8a82" stroke-width="1.8"><path d="M6 3h9l3 3v15H6z"/><path d="M9 10h6M9 14h6"/></svg></span>
+            <div class="num" id="statOrders">—</div>
+            <div class="lbl">Jami buyurtmalar</div>
+            <div class="delta up">&#8599; 12% shu oyda</div>
+          </div>
+          <div class="stat c2">
+            <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="#c07f1f" stroke-width="1.8"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6"/></svg></span>
+            <div class="num" id="statSellers">—</div>
+            <div class="lbl">Faol sotuvchilar</div>
+            <div class="delta up">&#8599; 4 ta yangi</div>
+          </div>
+          <div class="stat c3">
+            <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="#b6512f" stroke-width="1.8"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span>
+            <div class="num" id="statRevenue">—</div>
+            <div class="lbl">Bugungi daromad (so'm)</div>
+            <div class="delta up">&#8599; 8% kechagiga nisbatan</div>
+          </div>
+          <div class="stat c4">
+            <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="#2b4a70" stroke-width="1.8"><path d="M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6"/><circle cx="9" cy="8" r="3.2"/><path d="M15 8h6M18 5v6"/></svg></span>
+            <div class="num" id="statBuyers">—</div>
+            <div class="lbl">Yangi xaridorlar</div>
+            <div class="delta down">&#8600; 2% shu haftada</div>
+          </div>
+        </div>
+
+        <div class="panel-box">
+          <div class="panel-box-head"><h3>So'nggi buyurtmalar</h3></div>
+          <table>
+            <thead><tr><th>Buyurtma</th><th>Xaridor</th><th>Do'kon</th><th>Summa</th><th>Holat</th></tr></thead>
+            <tbody>
+              <tr><td>#10284</td><td>Sardor Yusupov</td><td>Guliston Bozor</td><td>84 000 so'm</td><td><span class="badge yellow">Jarayonda</span></td></tr>
+              <tr><td>#10283</td><td>Dilnoza Karimova</td><td>Qishloq Nozu-Ne'mat</td><td>132 500 so'm</td><td><span class="badge green">Yetkazildi</span></td></tr>
+              <tr><td>#10282</td><td>Aziz Tursunov</td><td>Baraka Do'koni</td><td>46 000 so'm</td><td><span class="badge blue">Qabul qilindi</span></td></tr>
+              <tr><td>#10281</td><td>Nilufar Egamova</td><td>Guliston Bozor</td><td>212 000 so'm</td><td><span class="badge red">Bekor qilindi</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== BUYURTMALAR ===== -->
+      <section class="section" id="sec-buyurtmalar">
+        <h1 class="title">Buyurtmalar</h1>
+        <p class="desc">Barcha do'konlardan tushgan buyurtmalar ro'yxati</p>
+        <div class="panel-box">
+          <table>
+            <thead><tr><th>№</th><th>Sana</th><th>Xaridor</th><th>Do'kon</th><th>Mahsulotlar</th><th>Summa</th><th>Holat</th></tr></thead>
+            <tbody>
+              <tr><td>#10284</td><td>14.08.2026</td><td>Sardor Yusupov</td><td>Guliston Bozor</td><td>3 xil</td><td>84 000</td><td><span class="badge yellow">Jarayonda</span></td></tr>
+              <tr><td>#10283</td><td>13.08.2026</td><td>Dilnoza Karimova</td><td>Nozu-Ne'mat</td><td>7 xil</td><td>132 500</td><td><span class="badge green">Yetkazildi</span></td></tr>
+              <tr><td>#10282</td><td>13.08.2026</td><td>Aziz Tursunov</td><td>Baraka Do'koni</td><td>2 xil</td><td>46 000</td><td><span class="badge blue">Qabul qilindi</span></td></tr>
+              <tr><td>#10281</td><td>12.08.2026</td><td>Nilufar Egamova</td><td>Guliston Bozor</td><td>5 xil</td><td>212 000</td><td><span class="badge red">Bekor qilindi</span></td></tr>
+              <tr><td>#10280</td><td>12.08.2026</td><td>Otabek Rahimov</td><td>Baraka Do'koni</td><td>4 xil</td><td>97 000</td><td><span class="badge green">Yetkazildi</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== MAHSULOTLAR ===== -->
+      <section class="section" id="sec-mahsulotlar">
+        <h1 class="title">Mahsulotlar</h1>
+        <p class="desc">Do'konlar tomonidan qo'shilgan mahsulotlar</p>
+        <div class="grid-cards">
+          <div class="prod-card"><div class="prod-thumb">&#127815;</div><div class="prod-name">Pomidor</div><div class="prod-shop">Guliston Bozor</div><div class="prod-price">9 000 so'm/kg</div></div>
+          <div class="prod-card"><div class="prod-thumb">&#127807;</div><div class="prod-name">Non</div><div class="prod-shop">Baraka Do'koni</div><div class="prod-price">4 000 so'm/dona</div></div>
+          <div class="prod-card"><div class="prod-thumb">&#127817;</div><div class="prod-name">Olma</div><div class="prod-shop">Nozu-Ne'mat</div><div class="prod-price">12 000 so'm/kg</div></div>
+          <div class="prod-card"><div class="prod-thumb">&#129370;</div><div class="prod-name">Sut</div><div class="prod-shop">Guliston Bozor</div><div class="prod-price">8 500 so'm/l</div></div>
+          <div class="prod-card"><div class="prod-thumb">&#127805;</div><div class="prod-name">Kartoshka</div><div class="prod-shop">Baraka Do'koni</div><div class="prod-price">5 500 so'm/kg</div></div>
+          <div class="prod-card"><div class="prod-thumb">&#127831;</div><div class="prod-name">Tuxum</div><div class="prod-shop">Nozu-Ne'mat</div><div class="prod-price">1 200 so'm/dona</div></div>
+        </div>
+      </section>
+
+      <!-- ===== SOTUVCHILAR ===== -->
+      <section class="section" id="sec-sotuvchilar">
+        <h1 class="title">Sotuvchilar</h1>
+        <p class="desc">Tizimga ulangan do'kon egalari</p>
+        <div class="seller-list">
+          <div class="seller-card">
+            <span class="seller-av">GB</span>
+            <div><div class="seller-name">Guliston Bozor</div><div class="seller-village">Zomin tumani</div>
+              <div class="seller-meta"><span>214 buyurtma</span><span>&#9733; 4.8</span></div></div>
+          </div>
+          <div class="seller-card">
+            <span class="seller-av">BD</span>
+            <div><div class="seller-name">Baraka Do'koni</div><div class="seller-village">Bulung'ur tumani</div>
+              <div class="seller-meta"><span>158 buyurtma</span><span>&#9733; 4.6</span></div></div>
+          </div>
+          <div class="seller-card">
+            <span class="seller-av">NN</span>
+            <div><div class="seller-name">Nozu-Ne'mat</div><div class="seller-village">Urgut tumani</div>
+              <div class="seller-meta"><span>301 buyurtma</span><span>&#9733; 4.9</span></div></div>
+          </div>
+          <div class="seller-card">
+            <span class="seller-av">QD</span>
+            <div><div class="seller-name">Qishloq Do'koni</div><div class="seller-village">Payariq tumani</div>
+              <div class="seller-meta"><span>92 buyurtma</span><span>&#9733; 4.4</span></div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== ANALITIKA ===== -->
+      <section class="section" id="sec-analitika">
+        <h1 class="title">Analitika</h1>
+        <p class="desc">Haftalik buyurtmalar dinamikasi</p>
+        <div class="panel-box" style="padding:20px;">
+          <div class="bars">
+            <div class="bar-col"><div class="bar" style="height:60%"></div><div class="bar-lbl">Dush</div></div>
+            <div class="bar-col"><div class="bar" style="height:78%"></div><div class="bar-lbl">Sesh</div></div>
+            <div class="bar-col"><div class="bar" style="height:45%"></div><div class="bar-lbl">Chor</div></div>
+            <div class="bar-col"><div class="bar" style="height:90%"></div><div class="bar-lbl">Pay</div></div>
+            <div class="bar-col"><div class="bar" style="height:70%"></div><div class="bar-lbl">Jum</div></div>
+            <div class="bar-col"><div class="bar" style="height:100%"></div><div class="bar-lbl">Shan</div></div>
+            <div class="bar-col"><div class="bar" style="height:55%"></div><div class="bar-lbl">Yak</div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== BOG'LANISH ===== -->
+      <section class="section" id="sec-boglanish">
+        <h1 class="title">Admin bilan bog'lanish</h1>
+        <p class="desc">Sotuvchilar va xaridorlardan kelgan murojaatlar</p>
+
+        <div class="msg-list">
+          <div class="msg"><div class="msg-top"><span class="msg-from">Guliston Bozor</span><span>2 soat oldin</span></div>
+            <div class="msg-text">Yangi mahsulot toifasini qo'shishda yordam kerak edi.</div></div>
+          <div class="msg"><div class="msg-top"><span class="msg-from">Sardor Yusupov (xaridor)</span><span>Kecha</span></div>
+            <div class="msg-text">Buyurtmam #10284 qachon yetib keladi?</div></div>
+        </div>
+
+        <div class="contact-form">
+          <label>Ism</label>
+          <input type="text" placeholder="Ismingiz">
+          <label>Xabar</label>
+          <textarea rows="4" placeholder="Xabaringizni yozing..."></textarea>
+          <button type="button">Yuborish</button>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  const API_BASE = '/api';
+
+  // ---- Auth guard ----
+  const token = localStorage.getItem('dkassa_token');
+  const userRaw = localStorage.getItem('dkassa_user');
+  if(!token || !userRaw){
+    window.location.href = 'admin-login.html';
+  }
+  const currentUser = JSON.parse(userRaw || '{}');
+  document.getElementById('adminName').textContent = currentUser.login || 'admin';
+  document.getElementById('adminInitials').textContent =
+    (currentUser.full_name || currentUser.login || 'A').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+
+  document.getElementById('logoutBtn').addEventListener('click', ()=>{
+    localStorage.removeItem('dkassa_token');
+    localStorage.removeItem('dkassa_user');
+    window.location.href = 'admin-login.html';
+  });
+
+  // ---- Live stats from backend ----
+  fetch(API_BASE + '/admin/stats', {
+    headers: { 'Authorization': 'Bearer ' + token }
+  })
+  .then(res => {
+    if(res.status === 401 || res.status === 403){
+      localStorage.removeItem('dkassa_token');
+      localStorage.removeItem('dkassa_user');
+      window.location.href = 'admin-login.html';
+      return null;
+    }
+    return res.json();
+  })
+  .then(data => {
+    if(!data) return;
+    document.getElementById('statOrders').textContent = data.totalOrders;
+    document.getElementById('statSellers').textContent = data.totalSellers;
+    document.getElementById('statBuyers').textContent = data.totalBuyers;
+    document.getElementById('statRevenue').textContent = Number(data.todayRevenue).toLocaleString('uz-UZ');
+  })
+  .catch(()=>{
+    // Backend ishga tushmagan bo'lsa, kartalarda "—" ko'rinishicha qoladi
+  });
+
+  const sidebar = document.getElementById('sidebar');
+  const main = document.getElementById('main');
+  const overlay = document.getElementById('overlay');
+  const hamburger = document.getElementById('hamburger');
+
+  function isMobile(){ return window.innerWidth <= 860; }
+
+  function toggleSidebar(){
+    if(isMobile()){
+      sidebar.classList.toggle('closed');
+      overlay.classList.toggle('show', !sidebar.classList.contains('closed'));
+    } else {
+      sidebar.classList.toggle('closed');
+      main.classList.toggle('full');
+    }
+  }
+  hamburger.addEventListener('click', toggleSidebar);
+  overlay.addEventListener('click', toggleSidebar);
+
+  if(isMobile()){ sidebar.classList.add('closed'); }
+
+  const titles = {
+    dashboard: ['Dashboard', "Umumiy holat va statistika"],
+    buyurtmalar: ['Buyurtmalar', "Barcha buyurtmalar ro'yxati"],
+    mahsulotlar: ['Mahsulotlar', "Do'konlardagi mahsulotlar"],
+    sotuvchilar: ['Sotuvchilar', "Ulangan do'kon egalari"],
+    analitika: ['Analitika', "Statistika va grafiklar"],
+    boglanish: ["Admin bilan bog'lanish", "Kelgan murojaatlar"]
+  };
+
+  document.querySelectorAll('.nav-item').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+      const key = btn.dataset.section;
+      document.getElementById('sec-'+key).classList.add('active');
+      document.getElementById('pageTitle').textContent = titles[key][0];
+      document.getElementById('pageSub').textContent = titles[key][1];
+      if(isMobile()){
+        sidebar.classList.add('closed');
+        overlay.classList.remove('show');
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
