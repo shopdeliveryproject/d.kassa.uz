@@ -80,6 +80,10 @@
   .main{ flex:1; margin-left: 264px; transition: margin-left .25s ease; min-width:0; }
   .main.full{ margin-left:0; }
 
+  @media (max-width: 860px){
+    .main{ margin-left:0 !important; }
+  }
+
   .topbar{
     position:sticky; top:0; z-index:20;
     background: var(--paper);
@@ -184,12 +188,22 @@
   .loading-row{ text-align:center; color:#8a7c62; font-size:13px; padding: 30px 0; }
 
   /* ---- admin settings ---- */
-  .settings-card{ background:#fff; border-radius:14px; border:1px solid rgba(33,26,18,0.06); padding:20px; max-width:480px; }
-  .settings-row{ display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid rgba(33,26,18,0.06); font-size:13.5px; }
-  .settings-row:last-child{ border-bottom:none; }
-  .settings-row span:first-child{ color:#8a7c62; }
-  .settings-row span:last-child{ font-weight:700; }
-  .settings-note{ margin-top:16px; font-size:12px; color:#8a7c62; font-style:italic; }
+  .settings-card{ background:#fff; border-radius:14px; border:1px solid rgba(33,26,18,0.06); padding:20px; max-width:420px; }
+  .settings-card .modal-field{ margin-bottom:14px; }
+  .settings-card label{
+    font-size:11px; font-weight:700; color:#8a7c62; text-transform:uppercase;
+    letter-spacing:0.3px; display:block; margin-bottom:6px;
+  }
+  .settings-card input{
+    width:100%; padding:11px 13px; border-radius:9px;
+    border:1px solid rgba(33,26,18,0.15); font-family:'Manrope',sans-serif; font-size:13.5px;
+  }
+  .settings-card input:focus{ outline:none; border-color: var(--saffron); }
+  .profile-success{
+    display:none; background: rgba(31,138,90,0.12); border:1px solid rgba(31,138,90,0.35);
+    color:#1f6b45; font-size:12px; padding:9px 12px; border-radius:8px; margin-bottom:14px;
+  }
+  .profile-success.show{ display:block; }
 
   /* ---- modal ---- */
   .modal-overlay{
@@ -335,14 +349,32 @@
       <!-- ===== ADMIN SOZLAMALARI ===== -->
       <section class="section" id="sec-sozlamalar">
         <h1 class="title">Admin sozlamalari</h1>
-        <p class="desc">Joriy admin profili haqida ma'lumot</p>
+        <p class="desc">Ism, login va parolingizni shu yerdan o'zgartirasiz</p>
 
         <div class="settings-card">
-          <div class="settings-row"><span>Login</span><span id="settingsLogin">—</span></div>
-          <div class="settings-row"><span>To'liq ism</span><span id="settingsName">—</span></div>
-          <div class="settings-row"><span>Rol</span><span>Admin</span></div>
+          <div class="modal-error" id="profileError"></div>
+          <div class="profile-success" id="profileSuccess">Sozlamalar saqlandi.</div>
+
+          <form id="profileForm">
+            <div class="modal-field">
+              <label for="fullName">Ism familiya</label>
+              <input type="text" id="fullName" required>
+            </div>
+            <div class="modal-field">
+              <label for="loginField">Login</label>
+              <input type="text" id="loginField" required>
+            </div>
+            <div class="modal-field">
+              <label for="newPassword">Yangi parol (ixtiyoriy)</label>
+              <input type="password" id="newPassword" placeholder="o'zgartirmoqchi bo'lsangiz yozing">
+            </div>
+            <div class="modal-field">
+              <label for="currentPassword">Joriy parolingiz (tasdiqlash uchun)</label>
+              <input type="password" id="currentPassword" required>
+            </div>
+            <button type="submit" class="btn-primary" id="profileSubmit">Saqlash</button>
+          </form>
         </div>
-        <p class="settings-note">Parolni o'zgartirish va boshqa sozlamalar tez orada qo'shiladi.</p>
       </section>
 
     </div>
@@ -400,8 +432,62 @@
   document.getElementById('adminName').textContent = currentUser.login || 'admin';
   document.getElementById('adminInitials').textContent =
     (currentUser.full_name || currentUser.login || 'A').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-  document.getElementById('settingsLogin').textContent = currentUser.login || '—';
-  document.getElementById('settingsName').textContent = currentUser.full_name || '—';
+  // ---- Admin sozlamalari formasi ----
+  const profileForm = document.getElementById('profileForm');
+  const profileError = document.getElementById('profileError');
+  const profileSuccess = document.getElementById('profileSuccess');
+  const profileSubmit = document.getElementById('profileSubmit');
+
+  function fillProfileForm(){
+    document.getElementById('fullName').value = currentUser.full_name || '';
+    document.getElementById('loginField').value = currentUser.login || '';
+  }
+  fillProfileForm();
+
+  profileForm.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    profileError.classList.remove('show');
+    profileSuccess.classList.remove('show');
+    profileSubmit.disabled = true;
+    profileSubmit.textContent = 'Saqlanmoqda...';
+
+    try{
+      const res = await authFetch('/admin/profile', {
+        method: 'PATCH',
+        body: JSON.stringify({
+          fullName: document.getElementById('fullName').value.trim(),
+          login: document.getElementById('loginField').value.trim(),
+          newPassword: document.getElementById('newPassword').value,
+          currentPassword: document.getElementById('currentPassword').value
+        })
+      });
+      const data = await res.json();
+
+      if(!res.ok){
+        profileError.textContent = data.error || 'Xatolik yuz berdi.';
+        profileError.classList.add('show');
+        return;
+      }
+
+      localStorage.setItem('dkassa_token', data.token);
+      localStorage.setItem('dkassa_user', JSON.stringify(data.user));
+      Object.assign(currentUser, data.user);
+
+      document.getElementById('adminName').textContent = currentUser.login;
+      document.getElementById('adminInitials').textContent =
+        (currentUser.full_name || currentUser.login).split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+
+      document.getElementById('newPassword').value = '';
+      document.getElementById('currentPassword').value = '';
+      profileSuccess.classList.add('show');
+    } catch(err){
+      profileError.textContent = 'Serverga ulanib bo\'lmadi.';
+      profileError.classList.add('show');
+    } finally {
+      profileSubmit.disabled = false;
+      profileSubmit.textContent = 'Saqlash';
+    }
+  });
 
   document.getElementById('logoutBtn').addEventListener('click', ()=>{
     localStorage.removeItem('dkassa_token');

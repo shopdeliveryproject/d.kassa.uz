@@ -1,92 +1,84 @@
-# d.kassa.uz — GitHub + Vercel orqali joylashtirish
+# d.kassa.uz — GitHub + Vercel + Supabase orqali joylashtirish
 
-Bu loyiha ikki qismdan iborat, lekin **bitta** Vercel deploy'ida birga ishlaydi:
-- Statik sahifalar: `index.html`, `admin-login.html`, `admin-dashboard.html`
-- Backend: `api/` papkasidagi Vercel Serverless Functions
-- Baza: Postgres (Vercel Storage orqali, Neon asosida — bepul tarif bor)
+Bu qo'llanma to'liq **brauzer orqali** bajariladi — kompyuteringizda Node.js,
+terminal yoki boshqa dastur o'rnatish shart emas.
 
-## 1-qadam — GitHub'ga yuklash
+Loyiha uch qismdan iborat:
+- **Statik sahifalar**: `index.html`, `admin-login.html`, `admin-dashboard.html`
+- **Backend**: `api/` papkasidagi Vercel Serverless Functions
+- **Baza va fayl saqlash**: Supabase (Postgres baza + Storage — bitta joyda)
 
-```bash
-git init
-git add .
-git commit -m "d.kassa.uz — birinchi versiya"
-```
+## 1-qadam — Supabase loyihasini yaratish
 
-GitHub'da yangi bo'sh repository yarating (masalan `dkassa-uz`), so'ng:
+1. [supabase.com](https://supabase.com) da ro'yxatdan o'ting.
+2. **New Project** → nom bering, kuchli baza paroli o'rnating (eslab qoling), **Create new project**.
+3. Loyiha tayyor bo'lishini kuting.
 
-```bash
-git remote add origin https://github.com/FOYDALANUVCHI_NOMI/dkassa-uz.git
-git branch -M main
-git push -u origin main
-```
+## 2-qadam — Baza ulanish manzilini olish
 
-## 2-qadam — Vercel'ga ulash
+1. Loyihangizda yashil **"Connect"** tugmasini bosing.
+2. **"Direct Connection"** kartasini tanlang.
+3. **"Transaction pooler"** variantini tanlang (port `6543`, serverless uchun tavsiya etilgan).
+4. Ulanish satrini nusxalang, undagi `[YOUR-PASSWORD]` qismini bazaviy parolingiz bilan almashtiring. Bu — `DATABASE_URL`.
 
-1. [vercel.com](https://vercel.com) da GitHub hisobingiz bilan kiring.
-2. **Add New → Project** → GitHub'dagi `dkassa-uz` repositoryni tanlang.
-3. Framework: **Other** (avtomatik aniqlanadi) — hech narsa o'zgartirmang.
-4. Hozircha **Deploy** bosmang — avval bazani ulaymiz (3-qadam), aks holda sayt xato beradi.
+## 3-qadam — Storage kalitlarini olish
 
-## 3-qadam — Postgres bazasini ulash
+1. **Settings → API Keys** bo'limiga o'ting.
+2. **Secret keys** ostidagi `default` kalitni (ko'z belgisi bilan ochib) nusxalang. Bu — `SUPABASE_SERVICE_ROLE_KEY`.
+3. **Settings → General** bo'limidan **Project URL**ni nusxalang. Bu — `SUPABASE_URL`.
 
-1. Vercel loyihangiz ichida **Storage** bo'limiga o'ting.
-2. **Create Database → Postgres** (Neon asosida, bepul tarif yetarli).
-3. Yaratilgach, uni loyihangizga **Connect** qiling — bu avtomatik ravishda
-   `POSTGRES_URL` kabi environment variable'larni loyihangizga qo'shadi.
+## 4-qadam — Storage bucket yaratish
 
-## 4-qadam — Boshqa environment variable'larni qo'shish
+1. **Storage** bo'limiga o'ting.
+2. **New bucket** → nomi aynan `uploads` → **Public bucket**ni yoqing → **Create bucket**.
 
-Vercel loyihangizda **Settings → Environment Variables** bo'limiga o'ting va qo'shing:
+## 5-qadam — Bazani tayyorlash (SQL Editor orqali, brauzerda)
+
+1. Supabase loyihangizda chapdagi **"SQL Editor"** bo'limiga o'ting.
+2. **"New query"** tugmasini bosing.
+3. Loyihadagi `scripts/setup.sql` faylini oching, ichidagi hammasini nusxalab, shu yerga joylashtiring.
+4. **"Run"** tugmasini bosing.
+5. Pastda "Success" degan xabar chiqsa — baza tayyor: jadvallar yaratildi va admin foydalanuvchi (`imradjabov` / `zdrrgb12`) qo'shildi.
+
+## 6-qadam — GitHub'ga yuklash
+
+1. GitHub'da repository yarating (yoki mavjudidan foydalaning).
+2. Repository sahifasida **"Add file" → "Upload files"**.
+3. Loyiha papkasidagi barcha fayl va papkalarni sudrab tashlang.
+4. **"Commit changes"**.
+
+## 7-qadam — Vercel'da environment variable'larni sozlash
+
+Vercel loyihangizda **Settings → Environment Variables** bo'limida quyidagilar bo'lishi kerak:
 
 | Nomi | Qiymati |
 |---|---|
-| `JWT_SECRET` | uzun, tasodifiy maxfiy matn (masalan 40+ belgi) |
+| `DATABASE_URL` | 2-qadamda olingan Transaction pooler manzili |
+| `SUPABASE_URL` | 3-qadamda olingan Project URL |
+| `SUPABASE_SERVICE_ROLE_KEY` | 3-qadamda olingan secret kalit |
+| `JWT_SECRET` | uzun, tasodifiy maxfiy matn |
 | `JWT_EXPIRES_IN` | `7d` |
 | `SEED_ADMIN_LOGIN` | `imradjabov` |
-| `SEED_ADMIN_PASSWORD` | `zdrrgb12` (keyinroq o'zgartirishingiz mumkin) |
-| `SEED_ADMIN_NAME` | ismingiz |
+| `SEED_ADMIN_PASSWORD` | `zdrrgb12` |
 
-Shundan so'ng **Deploy** tugmasini bosing.
+Saqlagach, **Deployments** bo'limidan oxirgi deploy'ni **Redeploy** qiling.
 
-## 5-qadam — Bazani tayyorlash (jadvallar + admin)
+## 8-qadam — Tekshirish
 
-Bu bir martalik amal — mahalliy kompyuteringizdan bajariladi, chunki u
-production bazangizga to'g'ridan-to'g'ri ulanadi:
+Vercel bergan domenni oching:
+- Bosh sahifada **Admin**ni tanlang
+- Login: `imradjabov`, Parol: `zdrrgb12`
+- Dashboard ochilib statistika ko'rinishi kerak
+- **Do'konlar** bo'limida yangi do'kon qo'shib ko'ring
 
-1. Vercel'dagi **Settings → Environment Variables** dan `POSTGRES_URL`
-   qiymatini nusxalab oling.
-2. Loyiha papkasida `.env.example`dan nusxa oling:
-   ```bash
-   cp .env.example .env
-   ```
-3. `.env` faylini oching, `POSTGRES_URL` va boshqa qiymatlarni to'ldiring
-   (xuddi Vercel'dagidek).
-4. Kutubxonalarni o'rnating va seed skriptini ishga tushiring:
-   ```bash
-   npm install
-   npm run seed
-   ```
-5. Konsolda "✔ Admin foydalanuvchi yaratildi" degan xabarni ko'rishingiz kerak.
+## Ixtiyoriy: Node.js orqali (agar xohlasangiz)
 
-## 6-qadam — Tekshirish
-
-Vercel bergan domenni oching (masalan `dkassa-uz.vercel.app`):
-- Bosh sahifada profil tanlang → **Admin**
-- Login: `imradjabov`, Parol: `zdrrgb12` (yoki o'zingiz `.env`da bergan qiymat)
-- Dashboard ochilib, statistika kartalari haqiqiy bazadan yuklanishi kerak.
-
-## Keyinchalik: o'z domeningizni ulash
-
-Vercel loyihangizda **Settings → Domains** bo'limidan `d.kassa.uz` kabi
-haqiqiy domeningizni bemalol ulashingiz mumkin.
+`scripts/seed.js` fayli xuddi shu ishni Node.js orqali ham bajaradi — bu
+ixtiyoriy, SQL Editor usuli undan farqli o'laroq hech qanday dastur talab
+qilmaydi, shuning uchun asosiy yo'l sifatida shuni tavsiya qilamiz.
 
 ## Muhim eslatmalar
 
-- `.env` faylini **hech qachon** GitHub'ga yubormang (`.gitignore`da allaqachon
-  chiqarib tashlangan).
-- `JWT_SECRET`ni ishonchli va uzun qiling — bu tokenlaringizni himoya qiladi.
-- Har safar kodga o'zgartirish kiritib GitHub'ga push qilsangiz, Vercel
-  avtomatik ravishda qayta joylashtiradi (CI/CD allaqachon ishlaydi).
-- Sotuvchi va Xaridor panellari tayyor bo'lgach, xuddi shu `api/` papkasiga
-  yangi fayllar qo'shish orqali kengaytiriladi — alohida server kerak emas.
+- `.env` yoki parollarni **hech qachon** GitHub'ga yubormang.
+- `SUPABASE_SERVICE_ROLE_KEY` maxfiy — uni faqat Vercel Environment Variables'da saqlang.
+- Sotuvchi va Xaridor panellari, shuningdek mahsulot rasmlari yuklash tez orada shu tuzilmaga qo'shiladi.
