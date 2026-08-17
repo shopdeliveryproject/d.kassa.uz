@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>d.kassa.uz — Sotuvchi panel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:        #211a12;
+    --night:      #1c2c46;
+    --turquoise:  #1f8a82;
+    --turquoise-l:#59b8ae;
+    --saffron:    #e6a233;
+    --brick:      #b6512f;
+    --parchment:  #f7efdd;
+    --paper:      #fbf7ec;
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; font-family:'Manrope',sans-serif; color:var(--ink); background:var(--parchment); }
+
+  .layout{ display:flex; min-height:100vh; }
+
+  /* ============ SIDEBAR ============ */
+  .sidebar{
+    width: 264px;
+    flex-shrink:0;
+    background: linear-gradient(180deg,#1c2c46,#182339);
+    color: var(--parchment);
+    display:flex; flex-direction:column;
+    position:fixed; top:0; bottom:0; left:0;
+    transform: translateX(0);
+    transition: transform .25s ease;
+    z-index: 40;
+  }
+  .sidebar.closed{ transform: translateX(-100%); }
+
+  .brand{ display:flex; align-items:center; gap:10px; padding: 22px 22px 16px; }
+  .brand .mark{
+    width:34px; height:34px; border-radius:9px;
+    background: linear-gradient(135deg,var(--saffron),var(--turquoise));
+    display:flex; align-items:center; justify-content:center;
+    font-weight:800; color:#1c2c46; font-size:14px;
+  }
+  .brand .name{ font-weight:800; font-size:16px; letter-spacing:0.2px; }
+  .brand .sub{ font-size:10.5px; color: rgba(247,239,221,0.45); font-family:'IBM Plex Mono',monospace; }
+
+  .trim-mini{
+    height:6px; margin: 4px 0 14px;
+    background-image: repeating-linear-gradient(45deg,var(--saffron) 0 8px,var(--turquoise) 8px 16px,var(--brick) 16px 24px);
+    opacity:0.8;
+  }
+
+  nav{ flex:1; padding: 4px 14px; display:flex; flex-direction:column; gap:3px; overflow-y:auto; }
+  .nav-item{
+    display:flex; align-items:center; gap:12px;
+    padding: 11px 14px;
+    border-radius: 10px;
+    color: rgba(247,239,221,0.72);
+    font-size: 14px; font-weight:600;
+    cursor:pointer;
+    border:none; background:none; width:100%; text-align:left;
+    font-family:'Manrope',sans-serif;
+    transition: background .15s ease, color .15s ease;
+  }
+  .nav-item svg{ width:18px; height:18px; flex-shrink:0; opacity:0.85; }
+  .nav-item:hover{ background: rgba(255,255,255,0.06); color:#fff; }
+  .nav-item.active{ background: rgba(230,162,51,0.15); color: var(--saffron); }
+  .nav-item.active svg{ opacity:1; }
+
+  .sidebar-foot{ padding: 16px 22px 20px; font-size: 11px; color: rgba(247,239,221,0.35); font-style: italic; }
+
+  .overlay{ display:none; position:fixed; inset:0; background:rgba(0,0,0,0.35); z-index:30; }
+  .overlay.show{ display:block; }
+
+  /* ============ MAIN ============ */
+  .main{ flex:1; margin-left: 264px; transition: margin-left .25s ease; min-width:0; }
+  .main.full{ margin-left:0; }
+  @media (max-width: 860px){ .main{ margin-left:0 !important; } }
+
+  .topbar{
+    position:sticky; top:0; z-index:20;
+    background: var(--paper);
+    border-bottom: 1px solid rgba(33,26,18,0.08);
+    display:flex; align-items:center; gap:14px;
+    padding: 14px 24px;
+  }
+  .hamburger{
+    background:none; border:none; cursor:pointer;
+    width:38px; height:38px; border-radius:9px;
+    display:flex; align-items:center; justify-content:center;
+    flex-direction:column; gap:4px;
+    transition: background .15s ease;
+  }
+  .hamburger:hover{ background: rgba(33,26,18,0.06); }
+  .hamburger span{ width:18px; height:2px; background: var(--ink); border-radius:2px; }
+
+  .page-title{ font-weight:800; font-size:18px; }
+  .page-sub{ font-size:12px; color:#8a7c62; margin-top:1px; }
+  .topbar-right{ margin-left:auto; display:flex; align-items:center; gap:14px; }
+  .admin-chip{
+    display:flex; align-items:center; gap:9px;
+    background:#fff; border:1px solid rgba(33,26,18,0.08);
+    padding: 6px 12px 6px 6px; border-radius:30px;
+  }
+  .admin-chip .av{
+    width:26px;height:26px;border-radius:50%;
+    background: linear-gradient(135deg,#f6cf6b,#e8a233);
+    display:flex;align-items:center;justify-content:center;
+    color:#5c3d10; font-weight:800; font-size:11px;
+  }
+  .admin-chip span{ font-size:12.5px; font-weight:700; }
+  .logout-btn{ border:none;background:none;cursor:pointer;color:#8a7c62;font-size:12.5px;font-weight:700; }
+
+  .content{ padding: 26px 24px 60px; max-width:1200px; }
+  .section{ display:none; animation: fadein .25s ease; }
+  .section.active{ display:block; }
+  @keyframes fadein{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
+
+  h1.title{ font-size:22px; font-weight:800; margin:0 0 4px; }
+  p.desc{ color:#8a7c62; font-size:13.5px; margin:0 0 22px; }
+
+  /* ---- stat cards ---- */
+  .stats{ display:grid; grid-template-columns: repeat(3,1fr); gap:14px; margin-bottom:26px; }
+  @media(max-width:900px){ .stats{ grid-template-columns: repeat(2,1fr); } }
+  @media(max-width:520px){ .stats{ grid-template-columns: 1fr; } }
+  .stat{ background:#fff; border-radius:14px; padding:18px; border: 1px solid rgba(33,26,18,0.06); }
+  .stat .icon{ width:36px;height:36px;border-radius:10px; display:flex;align-items:center;justify-content:center; margin-bottom:12px; }
+  .stat .icon svg{ width:18px;height:18px; }
+  .stat.c1 .icon{ background:rgba(31,138,130,0.12); }
+  .stat.c2 .icon{ background:rgba(230,162,51,0.15); }
+  .stat.c3 .icon{ background:rgba(182,81,47,0.12); }
+  .stat .num{ font-size:24px; font-weight:800; }
+  .stat .lbl{ font-size:12px; color:#8a7c62; margin-top:2px; }
+
+  .shop-banner{
+    background: linear-gradient(135deg,#1c2c46,#223457);
+    color:#fff; border-radius:14px; padding:18px 20px; margin-bottom:20px;
+    display:flex; align-items:center; gap:14px;
+  }
+  .shop-banner .icon{
+    width:42px;height:42px;border-radius:12px;
+    background: linear-gradient(135deg,var(--saffron),#c07f1f);
+    display:flex;align-items:center;justify-content:center; flex-shrink:0;
+  }
+  .shop-banner .name{ font-weight:800; font-size:15.5px; }
+  .shop-banner .note{ font-size:11.5px; color:rgba(247,239,221,0.55); margin-top:2px; }
+
+  /* ---- placeholder sections ---- */
+  .empty-block{
+    background:#fff; border:1px dashed rgba(33,26,18,0.18); border-radius:14px;
+    padding: 50px 20px; text-align:center; color:#8a7c62; font-size:13.5px;
+  }
+  .empty-block .big{ font-size:32px; margin-bottom:10px; }
+  .empty-block .soon{
+    display:inline-block; margin-top:10px; padding:4px 12px; border-radius:20px;
+    background: rgba(230,162,51,0.15); color:#a9721f; font-size:11px; font-weight:700;
+  }
+
+  .loading-row{ text-align:center; color:#8a7c62; font-size:13px; padding: 30px 0; }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+  <div class="overlay" id="overlay"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <span class="mark">DK</span>
+      <div>
+        <div class="name">d.kassa.uz</div>
+        <div class="sub">sotuvchi panel</div>
+      </div>
+    </div>
+    <div class="trim-mini"></div>
+
+    <nav>
+      <button class="nav-item active" data-section="dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="5" rx="1.5"/><rect x="13" y="11" width="8" height="10" rx="1.5"/><rect x="3" y="14" width="8" height="7" rx="1.5"/></svg>
+        Dashboard
+      </button>
+      <button class="nav-item" data-section="buyurtmalar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M6 3h9l3 3v15H6z"/><path d="M9 10h6M9 14h6M9 18h3"/></svg>
+        Buyurtmalar
+      </button>
+      <button class="nav-item" data-section="mahsulotlar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 8l-9-5-9 5 9 5 9-5Z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>
+        Mahsulotlar
+      </button>
+      <button class="nav-item" data-section="sotuvchilar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6"/><circle cx="17.5" cy="9" r="2.6"/><path d="M15.5 20c.3-2.6 1.9-4.3 4-4.6"/></svg>
+        Sotuvchilar
+      </button>
+      <button class="nav-item" data-section="tolov">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+        To'lov tizimi
+      </button>
+      <button class="nav-item" data-section="telegram">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M22 3 2 11l6 2m14-10-4 17-9-6m13-11L8 13"/></svg>
+        Telegram
+      </button>
+      <button class="nav-item" data-section="analitika">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 20V10M11 20V4M18 20v-7"/><path d="M2 20h20"/></svg>
+        Analitika
+      </button>
+      <button class="nav-item" data-section="boglanish">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 5h16v12H8l-4 4V5Z"/></svg>
+        Admin bilan bog'lanish
+      </button>
+    </nav>
+
+    <div class="sidebar-foot">created by radjabov.a</div>
+  </aside>
+
+  <div class="main" id="main">
+
+    <div class="topbar">
+      <button class="hamburger" id="hamburger" aria-label="Menyu">
+        <span></span><span></span><span></span>
+      </button>
+      <div>
+        <div class="page-title" id="pageTitle">Dashboard</div>
+        <div class="page-sub" id="pageSub">Do'koningiz haqida umumiy holat</div>
+      </div>
+      <div class="topbar-right">
+        <div class="admin-chip">
+          <span class="av" id="adminInitials">S</span>
+          <span id="adminName">sotuvchi</span>
+        </div>
+        <button id="logoutBtn" class="logout-btn">Chiqish</button>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ===== DASHBOARD ===== -->
+      <section class="section active" id="sec-dashboard">
+        <div class="shop-banner" id="shopBanner" style="display:none;">
+          <span class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#241c15" stroke-width="1.8" width="20" height="20"><path d="M4 10V21h16V10"/><path d="M2 10l2-6h16l2 6"/></svg>
+          </span>
+          <div>
+            <div class="name" id="shopBannerName">—</div>
+            <div class="note">Sizning do'koningiz</div>
+          </div>
+        </div>
+
+        <div class="stats">
+          <div class="stat c1">
+            <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="#1f8a82" stroke-width="1.8"><path d="M21 8l-9-5-9 5 9 5 9-5Z"/><path d="M3 8v8l9 5 9-5V8"/></svg></span>
+            <div class="num" id="statProducts">—</div>
+            <div class="lbl">Mahsulotlar soni</div>
+          </div>
+          <div class="stat c2">
+            <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="#c07f1f" stroke-width="1.8"><path d="M6 3h9l3 3v15H6z"/><path d="M9 10h6M9 14h6"/></svg></span>
+            <div class="num" id="statOrders">—</div>
+            <div class="lbl">Jami buyurtmalar</div>
+          </div>
+          <div class="stat c3">
+            <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="#b6512f" stroke-width="1.8"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span>
+            <div class="num" id="statRevenue">—</div>
+            <div class="lbl">Bugungi daromad (so'm)</div>
+          </div>
+        </div>
+
+        <div class="empty-block">
+          <div class="big">📦</div>
+          Hozircha buyurtmalar tarixi bo'sh.<br>Mahsulot qo'shishni boshlaganingizdan so'ng bu yerda ko'rinadi.
+        </div>
+      </section>
+
+      <!-- ===== PLACEHOLDER BO'LIMLAR ===== -->
+      <section class="section" id="sec-buyurtmalar">
+        <h1 class="title">Buyurtmalar</h1>
+        <p class="desc">Do'koningizga tushgan buyurtmalar shu yerda ko'rinadi</p>
+        <div class="empty-block"><div class="big">🧾</div>Bu bo'lim tez orada ishga tushiriladi<div><span class="soon">Tez orada</span></div></div>
+      </section>
+
+      <section class="section" id="sec-mahsulotlar">
+        <h1 class="title">Mahsulotlar</h1>
+        <p class="desc">Do'koningiz mahsulotlarini shu yerdan qo'shasiz va boshqarasiz</p>
+        <div class="empty-block"><div class="big">🛒</div>Bu bo'lim tez orada ishga tushiriladi<div><span class="soon">Tez orada</span></div></div>
+      </section>
+
+      <section class="section" id="sec-sotuvchilar">
+        <h1 class="title">Sotuvchilar</h1>
+        <p class="desc">Do'koningiz xodimlari va ularning huquqlari</p>
+        <div class="empty-block"><div class="big">👥</div>Bu bo'lim tez orada ishga tushiriladi<div><span class="soon">Tez orada</span></div></div>
+      </section>
+
+      <section class="section" id="sec-tolov">
+        <h1 class="title">To'lov tizimi</h1>
+        <p class="desc">Click, Payme va boshqa to'lov usullarini ulash</p>
+        <div class="empty-block"><div class="big">💳</div>Bu bo'lim tez orada ishga tushiriladi<div><span class="soon">Tez orada</span></div></div>
+      </section>
+
+      <section class="section" id="sec-telegram">
+        <h1 class="title">Telegram</h1>
+        <p class="desc">Buyurtma xabarnomalarini Telegram botga ulash</p>
+        <div class="empty-block"><div class="big">✈️</div>Bu bo'lim tez orada ishga tushiriladi<div><span class="soon">Tez orada</span></div></div>
+      </section>
+
+      <section class="section" id="sec-analitika">
+        <h1 class="title">Analitika</h1>
+        <p class="desc">Sotuvlar dinamikasi va statistika</p>
+        <div class="empty-block"><div class="big">📊</div>Bu bo'lim tez orada ishga tushiriladi<div><span class="soon">Tez orada</span></div></div>
+      </section>
+
+      <section class="section" id="sec-boglanish">
+        <h1 class="title">Admin bilan bog'lanish</h1>
+        <p class="desc">Savol yoki muammolaringizni admin'ga yuboring</p>
+        <div class="empty-block"><div class="big">💬</div>Bu bo'lim tez orada ishga tushiriladi<div><span class="soon">Tez orada</span></div></div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  const API_BASE = '/api';
+
+  // ---- Auth guard ----
+  const token = localStorage.getItem('dkassa_token');
+  const userRaw = localStorage.getItem('dkassa_user');
+  if(!token || !userRaw){
+    window.location.href = 'seller-login.html';
+  }
+  const currentUser = JSON.parse(userRaw || '{}');
+  if(currentUser.role !== 'sotuvchi'){
+    window.location.href = 'seller-login.html';
+  }
+
+  document.getElementById('adminName').textContent = currentUser.login || 'sotuvchi';
+  document.getElementById('adminInitials').textContent =
+    (currentUser.full_name || currentUser.login || 'S').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+
+  document.getElementById('logoutBtn').addEventListener('click', ()=>{
+    localStorage.removeItem('dkassa_token');
+    localStorage.removeItem('dkassa_user');
+    window.location.href = 'seller-login.html';
+  });
+
+  function authFetch(path, opts = {}){
+    return fetch(API_BASE + path, {
+      ...opts,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token,
+        ...(opts.headers || {})
+      }
+    }).then(res => {
+      if(res.status === 401){
+        localStorage.removeItem('dkassa_token');
+        localStorage.removeItem('dkassa_user');
+        window.location.href = 'seller-login.html';
+        throw new Error('unauthorized');
+      }
+      return res;
+    });
+  }
+
+  // ---- Live stats ----
+  authFetch('/seller/stats')
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById('statProducts').textContent = data.totalProducts ?? '0';
+      document.getElementById('statOrders').textContent = data.totalOrders ?? '0';
+      document.getElementById('statRevenue').textContent = Number(data.todayRevenue || 0).toLocaleString('uz-UZ');
+
+      if(data.shopName){
+        document.getElementById('shopBanner').style.display = 'flex';
+        document.getElementById('shopBannerName').textContent = data.shopName;
+      }
+    })
+    .catch(()=>{});
+
+  // ---- Sidebar / navigation ----
+  const sidebar = document.getElementById('sidebar');
+  const main = document.getElementById('main');
+  const overlay = document.getElementById('overlay');
+  const hamburger = document.getElementById('hamburger');
+
+  function isMobile(){ return window.innerWidth <= 860; }
+
+  function toggleSidebar(){
+    if(isMobile()){
+      sidebar.classList.toggle('closed');
+      overlay.classList.toggle('show', !sidebar.classList.contains('closed'));
+    } else {
+      sidebar.classList.toggle('closed');
+      main.classList.toggle('full');
+    }
+  }
+  hamburger.addEventListener('click', toggleSidebar);
+  overlay.addEventListener('click', toggleSidebar);
+  if(isMobile()){ sidebar.classList.add('closed'); }
+
+  const titles = {
+    dashboard: ['Dashboard', "Do'koningiz haqida umumiy holat"],
+    buyurtmalar: ['Buyurtmalar', "Do'koningizga tushgan buyurtmalar"],
+    mahsulotlar: ['Mahsulotlar', "Mahsulotlaringizni boshqarish"],
+    sotuvchilar: ['Sotuvchilar', "Do'kon xodimlari"],
+    tolov: ["To'lov tizimi", "To'lov usullarini ulash"],
+    telegram: ['Telegram', "Bot orqali xabarnomalar"],
+    analitika: ['Analitika', "Sotuvlar statistikasi"],
+    boglanish: ["Admin bilan bog'lanish", "Savol va murojaatlar"]
+  };
+
+  document.querySelectorAll('.nav-item').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+      const key = btn.dataset.section;
+      document.getElementById('sec-'+key).classList.add('active');
+      document.getElementById('pageTitle').textContent = titles[key][0];
+      document.getElementById('pageSub').textContent = titles[key][1];
+
+      if(isMobile()){
+        sidebar.classList.add('closed');
+        overlay.classList.remove('show');
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

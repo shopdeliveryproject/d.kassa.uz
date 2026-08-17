@@ -321,6 +321,8 @@
       const role = btn.dataset.role;
       if(role === 'admin'){
         window.location.href = 'admin-login.html';
+      } else if(role === 'sotuvchi'){
+        window.location.href = 'seller-login.html';
       } else {
         alert('Tanlandi: ' + btn.querySelector('.card-name').textContent + '\n(Bu profil uchun sahifa hali tayyorlanmoqda)');
       }
